@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://VOTRE-PSEUDO.github.io/callman/sitemap.xml
