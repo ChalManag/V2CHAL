@@ -1,3 +1,3 @@
-# CALLMAN
+# Scrim Simulator
 
-Jeu de management esport FPS (navigateur). Jeu indépendant : tous les noms d'équipes et de joueurs sont fictifs.
+Jeu de management esport FPS (navigateur). Jeu indépendant : tous les noms sont fictifs.

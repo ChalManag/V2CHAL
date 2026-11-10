@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CALLMAN — Jeu de management esport FPS</title>
+<title>Scrim Simulator — Jeu de management esport FPS</title>
 <meta name="description" content="Jeu de management esport FPS : dirige une franchise ou deviens le joueur que toute la ligue redoute.">
 <meta name="theme-color" content="#07090c">
-<meta property="og:type" content="website"><meta property="og:title" content="CALLMAN">
+<meta property="og:type" content="website"><meta property="og:title" content="Scrim Simulator">
 <meta property="og:description" content="Jeu de management esport FPS : dirige une franchise ou deviens le joueur que toute la ligue redoute."><meta property="og:url" content="https://chalmanag.github.io/V2CHAL/">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://chalmanag.github.io/V2CHAL/">
@@ -177,7 +177,7 @@ details.day .in{padding:4px 12px 10px}
 .nonoff{border-color:#7a4a14;color:#ffb35c;background:rgba(255,122,26,.08);letter-spacing:.08em;font-weight:700}
 .hhero{max-width:1180px;margin:0 auto;padding:clamp(10px,3vh,40px) clamp(16px,4vw,44px) 8px;text-align:center}
 .eyebrow{letter-spacing:.42em;font-size:12px;color:var(--mut);animation:hin .9s ease both}
-.glitch{font:800 clamp(44px,9vw,112px)/1 'Oxanium','Rajdhani',sans-serif;letter-spacing:.06em;margin:10px 0 6px;position:relative;display:inline-block;text-shadow:0 0 40px rgba(184,255,44,.25);animation:hin 1s .1s ease both}
+.glitch{font:800 clamp(30px,7.2vw,104px)/1 'Oxanium','Rajdhani',sans-serif;letter-spacing:.06em;margin:10px 0 6px;position:relative;display:inline-block;text-shadow:0 0 40px rgba(184,255,44,.25);animation:hin 1s .1s ease both}
 .glitch b{color:var(--acc)}
 .glitch::before,.glitch::after{content:attr(data-t);position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .glitch::before{color:#ff3b6b;transform:translate(3px,0);clip-path:inset(0 0 62% 0);animation:gl1 4.2s infinite steps(1);opacity:0}
@@ -306,7 +306,7 @@ const TAGS=['Kairo','Vandal','Mirage','Tempo','Slate','Quill','Rave','Onyx','Fal
 const NATS=['US','US','US','US','US','CA','CA','GB','GB','FR','FR','DE','AU','BR','SE','ES','NL','MX','KR'];
 const FLAG={US:'🇺🇸',CA:'🇨🇦',GB:'🇬🇧',FR:'🇫🇷',DE:'🇩🇪',AU:'🇦🇺',BR:'🇧🇷',SE:'🇸🇪',ES:'🇪🇸',NL:'🇳🇱',MX:'🇲🇽',KR:'🇰🇷'};
 /* ---------- ÉDITION (fan / publique) ---------- */
-const ED_PUBLIC={public:true,title:'CALLMAN',logoHTML:'CALL<b>MAN</b>',logoText:'CALLMAN',pts:'Points de ligue',titres:'Titres de ligue',champion:'Champion de la ligue',
+const ED_PUBLIC={public:true,title:'Scrim Simulator',logoHTML:'SCRIM<b>/</b>SIMULATOR',logoText:'SCRIM/SIMULATOR',pts:'Points de ligue',titres:'Titres de ligue',champion:'Champion de la ligue',
  modes:{hp:'Zone',snd:'Bombe',ovl:'Relais'},modesS:{hp:'ZONE',snd:'BOMBE',ovl:'RELAIS'},
  eyebrow:'SIMULATION & CARRIÈRE · FPS ESPORT',nonoff:'JEU INDÉPENDANT · NOMS FICTIFS',
  foot:'Jeu indépendant. Tous les noms d\'équipes et de joueurs sont fictifs ; toute ressemblance avec des personnes ou des organisations existantes serait fortuite.',
@@ -2093,11 +2093,11 @@ VIEWS.pflow=()=>{ensureCar();const c=G.car,done=Object.values(c.arcs).filter(a=>
    MONÉTISATION (édition publique uniquement) — voir le document « plan de mise en ligne »
    Renseigner MONET.* pour activer : adsClient (ca-pub-…), slots, verifyUrl, buyUrl.
    ========================================================= */
-const MONET={enabled:EDITION==='public',adsClient:'',slots:{home:'',main:''},verifyUrl:'',buyUrl:'',demo:false,interstitialSec:600,rewardOn:true};
+const MONET={enabled:false,adsClient:'',slots:{home:'',main:''},verifyUrl:'',buyUrl:'',demo:false,interstitialSec:600,rewardOn:true};
 const CK='cc_consent_v1',PK='cc_premium_v1';
 let _adsLoaded=false,_lastAd=0;
 function consent(){try{return JSON.parse(localStorage.getItem(CK)||'null')}catch(e){return null}}
-function premium(){if(!ED.public)return true;try{const p=JSON.parse(localStorage.getItem(PK)||'null');return !!(p&&p.exp>Date.now())}catch(e){return false}}
+function premium(){if(!ED.public||!MONET.enabled)return true;try{const p=JSON.parse(localStorage.getItem(PK)||'null');return !!(p&&p.exp>Date.now())}catch(e){return false}}
 function adsReady(){const c=consent();return MONET.enabled&&!premium()&&!!MONET.adsClient&&!!c&&c.ads}
 function loadAds(){
  if(_adsLoaded||!adsReady())return;_adsLoaded=true;
@@ -2107,7 +2107,7 @@ function adSlot(name){
  if(!MONET.enabled||premium())return'';
  if(adsReady()&&MONET.slots[name]){setTimeout(()=>{try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}},60);return`<div class="adwrap"><ins class="adsbygoogle" style="display:block" data-ad-client="${MONET.adsClient}" data-ad-slot="${MONET.slots[name]}" data-ad-format="auto" data-full-width-responsive="true"></ins></div>`}
  return MONET.demo?`<div class="adwrap demo">Espace publicitaire (démo)</div>`:''}
-function monetFooter(){return MONET.enabled?` <div class="flinks"><a href="privacy.html" target="_blank" rel="noopener">Confidentialité</a> · <a href="mentions-legales.html" target="_blank" rel="noopener">Mentions légales</a> · <a href="#" onclick="A.cookies();return false">Cookies</a> · <a href="#" onclick="A.premium();return false">${premium()?'Premium actif ✔':'Premium'}</a></div>`:''}
+function monetFooter(){if(!ED.public)return'';return` <div class="flinks"><a href="guide.html" target="_blank" rel="noopener">Guides</a> · <a href="a-propos.html" target="_blank" rel="noopener">À propos</a> · <a href="privacy.html" target="_blank" rel="noopener">Confidentialité</a> · <a href="mentions-legales.html" target="_blank" rel="noopener">Mentions légales</a>${MONET.enabled?` · <a href="#" onclick="A.cookies();return false">Cookies</a> · <a href="#" onclick="A.premium();return false">${premium()?'Premium actif ✔':'Premium'}</a>`:''}</div>`}
 function showBanner(){
  if(!MONET.enabled||$('#cb'))return;
  const d=document.createElement('div');d.id='cb';d.className='cbanner';
@@ -2138,7 +2138,7 @@ Object.assign(A,{
  consent(ok){try{localStorage.setItem(CK,JSON.stringify({ads:!!ok,t:Date.now()}))}catch(e){}const b=$('#cb');if(b)b.remove();if(ok)loadAds();toast(ok?'Préférences enregistrées':'Pubs personnalisées refusées')},
  cookies(){try{localStorage.removeItem(CK)}catch(e){}showBanner()},
  rewardAd(kind){if(premium()){grantReward(kind);return}if(adsReady()&&window.adBreak){window.adBreak({type:'reward',name:kind,beforeReward:show=>show(),adViewed:()=>grantReward(kind),adDismissed:()=>toast('Pas de bonus : la pub a été fermée.',1),adBreakDone:()=>{}})}else if(MONET.demo)demoAd(()=>grantReward(kind))},
- premium(){openModal(()=>`<div class="mh"><h2>${ED.public?'Circuit Pass — Premium':'Premium'}</h2><button class="btn x" onclick="A.close()">✕</button></div>
+ premium(){openModal(()=>`<div class="mh"><h2>${ED.public?'Scrim Pass — Premium':'Premium'}</h2><button class="btn x" onclick="A.close()">✕</button></div>
   ${premium()&&ED.public?'<div class="card" style="border-left:3px solid var(--good)"><b class="good">Premium actif ✔</b><div class="mut">Merci ! Aucune publicité et toutes les options cosmétiques sont débloquées.</div></div>':''}
   <div class="grid g2"><div class="card"><h3>Avantages</h3><ul class="how"><li>Aucune publicité</li><li>Coiffures, tenues, accessoires et fonds d'avatar exclusifs</li><li>Thèmes sonores supplémentaires (Chill, Synthwave)</li><li>Soutien au développement du jeu</li></ul></div>
   <div class="card"><h3>Activer avec une clé</h3><input id="lic" class="inp" placeholder="Clé de licence" style="width:100%"><div class="row" style="margin-top:8px"><button class="btn pri" onclick="A.activate()">Activer</button>${MONET.buyUrl?`<a class="btn warn" href="${MONET.buyUrl}" target="_blank" rel="noopener">Acheter</a>`:'<span class="mut">Achat bientôt disponible</span>'}</div><div class="mut" id="licmsg" style="margin-top:6px"></div></div></div>`,'sm')},
