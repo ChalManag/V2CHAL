@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
- <url><loc>https://scrim-simulator.dlglucien.workers.dev/</loc><lastmod>2026-11-10</lastmod></url>
- <url><loc>https://scrim-simulator.dlglucien.workers.dev/privacy.html</loc><lastmod>2026-11-10</lastmod></url>
- <url><loc>https://scrim-simulator.dlglucien.workers.dev/mentions-legales.html</loc><lastmod>2026-11-10</lastmod></url>
- <url><loc>https://scrim-simulator.dlglucien.workers.dev/guide.html</loc><lastmod>2026-11-10</lastmod></url>
- <url><loc>https://scrim-simulator.dlglucien.workers.dev/guide-modes.html</loc><lastmod>2026-11-10</lastmod></url>
- <url><loc>https://scrim-simulator.dlglucien.workers.dev/guide-manager.html</loc><lastmod>2026-11-10</lastmod></url>
- <url><loc>https://scrim-simulator.dlglucien.workers.dev/guide-joueur.html</loc><lastmod>2026-11-10</lastmod></url>
- <url><loc>https://scrim-simulator.dlglucien.workers.dev/a-propos.html</loc><lastmod>2026-11-10</lastmod></url>
+ <url><loc>https://scrim-simulator.dlglucien.workers.dev/</loc><lastmod>2026-11-11</lastmod></url>
+ <url><loc>https://scrim-simulator.dlglucien.workers.dev/privacy.html</loc><lastmod>2026-11-11</lastmod></url>
+ <url><loc>https://scrim-simulator.dlglucien.workers.dev/mentions-legales.html</loc><lastmod>2026-11-11</lastmod></url>
+ <url><loc>https://scrim-simulator.dlglucien.workers.dev/guide.html</loc><lastmod>2026-11-11</lastmod></url>
+ <url><loc>https://scrim-simulator.dlglucien.workers.dev/guide-modes.html</loc><lastmod>2026-11-11</lastmod></url>
+ <url><loc>https://scrim-simulator.dlglucien.workers.dev/guide-manager.html</loc><lastmod>2026-11-11</lastmod></url>
+ <url><loc>https://scrim-simulator.dlglucien.workers.dev/guide-joueur.html</loc><lastmod>2026-11-11</lastmod></url>
+ <url><loc>https://scrim-simulator.dlglucien.workers.dev/guide-defi.html</loc><lastmod>2026-11-11</lastmod></url>
+ <url><loc>https://scrim-simulator.dlglucien.workers.dev/a-propos.html</loc><lastmod>2026-11-11</lastmod></url>
 </urlset>

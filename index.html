@@ -8,6 +8,8 @@
 <meta name="theme-color" content="#07090c">
 <meta property="og:type" content="website"><meta property="og:title" content="Scrim Simulator">
 <meta property="og:description" content="Jeu de management esport FPS : dirige une franchise ou deviens le joueur que toute la ligue redoute."><meta property="og:url" content="https://scrim-simulator.dlglucien.workers.dev/">
+<meta property="og:image" content="https://scrim-simulator.dlglucien.workers.dev/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Scrim Simulator — Défi du jour"><meta name="twitter:description" content="Jeu de management esport FPS : dirige une franchise ou deviens le joueur que toute la ligue redoute."><meta name="twitter:image" content="https://scrim-simulator.dlglucien.workers.dev/og.png">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://scrim-simulator.dlglucien.workers.dev/">
 <link rel="manifest" href="manifest.webmanifest">
@@ -311,6 +313,60 @@ input[type=checkbox]{width:18px;height:18px;flex:0 0 auto;accent-color:var(--acc
 @media(max-width:1000px){.g32{grid-template-columns:minmax(0,1fr)}.vs .big{font-size:26px}.evc{flex-basis:200px}}
 @media(max-width:820px){nav button{white-space:nowrap;flex:0 0 auto;width:auto}}
 @media(max-width:620px){.menu h1{font-size:clamp(24px,8.4vw,38px);overflow-wrap:anywhere}main{padding:12px 10px 60px}.top{gap:10px}.vs{gap:6px}.vs .tn{font-size:17px}.h1{font-size:22px;flex-wrap:wrap}.md{padding:14px 12px}.stakes ul{font-size:14px}}
+/* ---- v6 : défi, classements, partage ---- */
+.dfhome{position:relative;overflow:hidden;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;text-align:left;margin:0 0 18px;padding:18px 22px;border-radius:12px;cursor:pointer;border:1px solid #6d8f1c;background:linear-gradient(120deg,rgba(184,255,44,.16),rgba(18,26,37,.86) 55%);backdrop-filter:blur(4px);transition:transform .2s,box-shadow .2s;animation:hin 1s .3s ease both}
+.dfhome:hover{transform:translateY(-3px);box-shadow:0 0 0 1px var(--acc),0 18px 44px -16px rgba(184,255,44,.45)}
+.dfh-g{position:absolute;left:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(184,255,44,.35),transparent 65%);animation:pulse 4s ease-in-out infinite;pointer-events:none}
+.dfh-l{position:relative;flex:1 1 380px;min-width:0}.dfh-l h2{font-size:30px;letter-spacing:.05em;margin:6px 0 4px}.dfh-l h2 b{color:var(--acc)}.dfh-l p{margin:0;color:#c9d3e0;max-width:620px}
+.dfh-r{position:relative;display:flex;flex-direction:column;gap:10px;align-items:flex-start;min-width:0}
+.dfh-s{display:flex;gap:14px;flex-wrap:wrap;font-size:15px}.dfh-s b{font-family:'Oxanium','Rajdhani',sans-serif;color:#fff}
+.dfw{max-width:1280px;margin:0 auto;padding:14px clamp(10px,2.5vw,26px) 70px}
+.dftop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:var(--r)}
+.dft{display:flex;flex-direction:column;line-height:1.2;min-width:0;flex:1 1 200px}.dft b{font:800 19px 'Oxanium','Rajdhani',sans-serif}.dft span{font-size:13px}
+.dfsteps{display:flex;gap:4px;flex-wrap:wrap}.dfsteps i{font-style:normal;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:12px;border:1px solid var(--line);color:var(--mut)}
+.dfsteps i.on{background:var(--acc);border-color:var(--acc);color:#0a1200;font-weight:700}.dfsteps i.d{color:var(--txt);border-color:var(--good)}
+.dfvs{width:fit-content;max-width:100%;margin:0 0 14px;padding:8px 14px;border-radius:8px;border:1px solid var(--acc2);background:rgba(255,122,26,.1)}
+.dfgrid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:14px;align-items:start}.dfgrid.m{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+.dfside{display:grid;gap:14px;position:sticky;top:10px}
+.dfh h2{font-size:22px}.dfh p{margin:4px 0 12px;max-width:760px}
+.dfpool{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.dfp{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:10px 12px;cursor:pointer;transition:.12s;min-width:0;display:grid;gap:8px}
+.dfp:hover{border-color:var(--mut);transform:translateY(-1px)}.dfp.on{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc);background:color-mix(in srgb,var(--acc) 9%,var(--panel))}.dfp.off{opacity:.42}
+.dfp1{display:flex;align-items:center;gap:8px;min-width:0}.dfp1 b{font:800 17px 'Oxanium','Rajdhani',sans-serif;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.dfnat{font-size:12px;color:var(--mut);white-space:nowrap}
+.dfp2{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.dfp2 span{background:var(--panel2);border-radius:6px;padding:3px 4px;text-align:center;min-width:0}.dfp2 small{display:block;font-size:10px;letter-spacing:.1em;color:var(--mut);text-transform:uppercase;white-space:nowrap}.dfp2 b{font-size:15px;white-space:nowrap}.dfwg b{color:var(--acc)}
+.dfp3{display:flex;gap:5px;flex-wrap:wrap;min-height:24px;align-items:center}.dfp3 .pill{font-size:12px;padding:0 7px}
+.pill.good{border-color:#1f7a5c;color:var(--good)}.pill.bad{border-color:#8a2a3d;color:#ff8da1}.pill.warn{border-color:#8a6d1d;color:var(--warn)}
+.dfbud{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px}.dfbud b{font:800 30px 'Oxanium','Rajdhani',sans-serif}
+.dfslots{display:grid;gap:6px;margin-top:10px}.dfs{display:flex;align-items:center;gap:8px;min-height:38px;padding:5px 10px;border:1px dashed var(--line);border-radius:7px;min-width:0}
+.dfs.on{border-style:solid;background:var(--panel2);cursor:pointer}.dfs b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dfs i{font-style:normal;color:var(--mut)}
+.dfo{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}.dfo:last-of-type{border-bottom:0}
+.dfo1{display:flex;align-items:center;gap:9px;min-width:0}.dfo1 small{display:block;font-size:11px;letter-spacing:.14em;color:var(--mut)}.dfo1 b{overflow-wrap:anywhere}
+.dfo2{display:flex;gap:6px}.dfo2 span{background:var(--panel2);border-radius:6px;padding:3px 7px;text-align:center}.dfo2 small{display:block;font-size:10px;letter-spacing:.1em;color:var(--mut)}.dfo2 span.good b{color:var(--good)}.dfo2 span.bad b{color:#ff8da1}
+.dfhero{margin-bottom:14px}.dfpips{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:14px}
+.dfpip{border:1px solid var(--line);border-radius:8px;padding:6px 4px;text-align:center;background:rgba(0,0,0,.14);min-width:0}.dfpip small{display:block;font-size:10px;letter-spacing:.1em;color:var(--mut);text-transform:uppercase;white-space:nowrap}.dfpip b{display:block;font:800 16px 'Oxanium','Rajdhani',sans-serif}.dfpip span{font-size:13px;color:var(--mut);white-space:nowrap}
+.dfpip.w{border-color:var(--good);background:rgba(52,211,153,.14)}.dfpip.w span{color:var(--good)}.dfpip.l{border-color:var(--bad);background:rgba(244,63,94,.12)}.dfpip.l span{color:#ff8da1}.dfpip.cur{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.dfcmp{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;text-align:center;margin-bottom:12px}.dfcmp small{display:block;color:var(--mut);letter-spacing:.14em;text-transform:uppercase;font-size:11px}.dfcmp b{font:800 30px 'Oxanium','Rajdhani',sans-serif}
+.dftacs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dftac{display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;min-height:96px;min-width:0;color:var(--txt)}
+.dftac:hover{border-color:var(--mut)}.dftac.on{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}.dftac b{font-size:16px}.dftac small{color:var(--mut);font-size:12.5px;line-height:1.3;font-weight:600}.dftac span{font-size:14px}
+.dftm{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:rgba(255,255,255,.03)}.dftm.off{opacity:.5;cursor:not-allowed}
+.dfsc{display:flex;justify-content:center;align-items:baseline;gap:18px;font:800 64px 'Oxanium','Rajdhani',sans-serif;margin:6px 0}.dfsc span{color:var(--mut);font-size:40px}
+.dflog{max-height:150px;overflow:hidden;font-size:14px;color:var(--mut)}.dflog div{padding:2px 0;border-bottom:1px dashed var(--line);animation:dffade .25s}@keyframes dffade{from{opacity:0}}.dflog b{color:var(--txt)}
+.dfres{animation:dfpop .35s ease}.dfres.w{border-color:var(--good)}.dfres.l{border-color:var(--bad)}@keyframes dfpop{from{transform:scale(.96);opacity:0}}
+.dfend{text-align:center;margin-top:12px;padding:10px;border-radius:8px;font-size:19px}.dfend.w{background:rgba(52,211,153,.14);border:1px solid var(--good)}.dfend.l{background:rgba(244,63,94,.12);border:1px solid var(--bad)}
+.dfr{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:4px 8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}.dfr>b:first-of-type{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dfr2{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px}.dfr2 span{display:flex;align-items:center;gap:6px}.dfr2 .bar{flex:1;min-width:0}
+.dfbig{font:800 clamp(64px,13vw,120px)/1 'Oxanium','Rajdhani',sans-serif;margin-top:8px}.dfbig small{font-size:.22em;color:var(--mut);margin-left:8px;letter-spacing:.1em}
+.dftier{display:inline-block;margin:8px 0 4px;padding:4px 20px;border-radius:20px;background:var(--c);color:#10151d;font:800 18px 'Oxanium','Rajdhani',sans-serif;letter-spacing:.12em}
+.dfgridr{display:grid;gap:8px;max-width:440px;margin:14px auto 0}.dfgridr>div{display:flex;align-items:center;gap:12px}.dfgridr small{width:64px;text-align:right;letter-spacing:.1em;color:var(--mut);font-weight:700}.dfgridr span{display:flex;gap:6px;flex:1}.dfgridr i{width:38px;height:38px;border-radius:8px;display:block}.dfgridr i.w{background:var(--good)}.dfgridr i.l{background:var(--bad)}.dfgridr b{font:800 20px 'Oxanium','Rajdhani',sans-serif}
+.dfkv{grid-template-columns:1fr auto}.dfkv b{text-align:right}
+.dfnext{display:grid;gap:8px}.dfnext .btn{justify-content:flex-start;width:100%}
+.lbt td{white-space:normal}.lbt td:first-child{width:44px;white-space:nowrap}.lbm{font-size:12px;margin-left:4px}
+.lbp{display:inline-flex;gap:2px;vertical-align:middle;margin-left:6px;align-items:center;font-size:12px}.lbp i{width:9px;height:9px;border-radius:2px;display:block}.lbp i.w{background:var(--good)}.lbp i.l{background:var(--bad)}.lbp i.s{width:4px;background:none}
+.cardimg{display:block;max-width:100%;max-height:62vh;margin:0 auto;border-radius:10px;border:1px solid var(--line)}
+.wbtns{margin-top:12px}
+@media(max-width:1000px){.dfgrid,.dfgrid.m{grid-template-columns:minmax(0,1fr)}.dfside{position:static}}
+@media(max-width:620px){.dfpool{grid-template-columns:minmax(0,1fr)}.dftacs{grid-template-columns:minmax(0,1fr)}.dftac{min-height:0}.dfsc{font-size:48px}.dfh-l h2{font-size:24px}.dfgridr i{width:30px;height:30px}.dfhome{padding:14px}.dfpip small{font-size:9px;letter-spacing:0}.dfpip b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dfpip span{font-size:12px}.dfpips{gap:5px}}
 </style>
 </head>
 <body>
@@ -324,7 +380,7 @@ input[type=checkbox]{width:18px;height:18px;flex:0 0 auto;accent-color:var(--acc
 
 /* ---------- utilitaires ---------- */
 const $=s=>document.querySelector(s);
-const rnd=Math.random;
+let RNG=Math.random;const rnd=()=>RNG();
 const ri=(a,b)=>Math.floor(rnd()*(b-a+1))+a;
 const pick=a=>a[Math.floor(rnd()*a.length)];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -880,7 +936,7 @@ function signPlayer(p,fee,wage,years){
 
 /* ---------- sauvegarde ---------- */
 const KEY='cc_m_v1';
-function save(){if(!G||!G.me)return;try{localStorage.setItem(G.mode==='player'?KEY_P:KEY_M,JSON.stringify(G))}catch(e){}}
+function save(){if(!G||!G.me||G.mode==='defi')return;try{localStorage.setItem(G.mode==='player'?KEY_P:KEY_M,JSON.stringify(G))}catch(e){}}
 function loadSave(mode){try{const s=localStorage.getItem(mode==='player'?KEY_P:KEY_M);return s?JSON.parse(s):null}catch(e){return null}}
 function rebuildObjectives(){
  // les fonctions de check ne se sérialisent pas : on recrée
@@ -936,6 +992,7 @@ function render(){
  if(ui.screen==='home'){renderHome();return}
  if(ui.screen==='teams'){renderMenu();return}
  if(ui.screen==='creator'){renderCreator();return}
+ if(ui.screen==='defi'&&DF){renderDefi();return}
  if(!G||!G.me){ui.screen='home';renderHome();return}
  homeStop();app.className='app';if(window.Music&&!(VW&&!VW.done))Music.set('game');
  const player=G.mode==='player',nav=player?PNAV:NAV;
@@ -1065,7 +1122,7 @@ VIEWS.table=()=>{
  const s=G.sel.stage||1,tb=G.stageTbl[s],rk=stageRank(s),pr=ptsRank();
  const dayNow=G.phase==='season'?G.cal[G.day]:null;if(dayNow)prepareDay(dayNow);
  const hasB=rk.some(t=>tb[t].bonus);
- return`<div class="h1">Classements</div>
+ return`<div class="h1">Classements <button class="btn sm" style="margin-left:auto" onclick="A.lb('manager')">🌍 Classement mondial</button></div>${mgrDone()?`<div class="card" style="margin-bottom:14px"><h3>Ta saison face au monde</h3><div>Score de saison : <b class="acc">${mgrScore()}</b> <span class="mut">(points de ligue + titres)</span></div>${worldBtns('manager')}</div>`:''}
  <div class="tabs">${[1,2,3,4].map(i=>`<button class="${s===i?'on':''}" onclick="A.stage(${i})">Stage ${i}</button>`).join('')}</div>
  <div class="grid g2"><div class="card"><h3>Stage ${s} <span class="r mut">top 8 → Major</span></h3><div class="tw"><table><tr><th>#</th><th>Équipe</th><th class="c">V</th><th class="c">D</th><th class="c">Cartes</th>${hasB?'<th class="c">Minor</th>':''}<th class="c">Pts</th><th class="c">Forme</th></tr>${rk.map((t,i)=>`<tr class="${t===G.me?'me':''} ${i<8?'q':''}"><td>${i+1}</td><td>${bdg(t)} ${tname(t)}</td><td class="c">${tb[t].w}</td><td class="c">${tb[t].l}</td><td class="c">${tb[t].mw}-${tb[t].ml}</td>${hasB?`<td class="c">${tb[t].bonus?'+'+tb[t].bonus:'—'}</td>`:''}<td class="c"><b>${stagePts(tb[t])}</b></td><td class="c">${formH(t)}</td></tr>`).join('')}</table></div>
  <p class="mut" style="margin:8px 0 0">Les Minors ajoutent des points de stage (seeding du Major). <a href="#" onclick="A.view('event');return false">Voir les tournois →</a></p></div>
@@ -1110,6 +1167,7 @@ VIEWS.fin=()=>{
 /* ---- Système ---- */
 VIEWS.sys=()=>`<div class="h1">Système</div><div class="grid g2"><div class="card"><h3>Sauvegarde</h3><p class="mut">La partie est sauvegardée automatiquement (navigateur) à chaque journée.</p><div class="row"><button class="btn" onclick="save();toast('Sauvegardé')">💾 Sauvegarder</button><button class="btn" onclick="A.exportSave()">⬇ Exporter</button><label class="btn">⬆ Importer<input type="file" accept=".json" hidden onchange="A.importSave(this)"></label><button class="btn dan" onclick="A.reset()">Nouvelle partie</button></div></div>
  <div class="card"><h3>Comment jouer</h3><ul style="margin:0;padding-left:18px;line-height:1.6"><li>Une saison = 4 Stages (5 journées) + 2 Minors (Pro-Am, groupes GSL) + 4 Majors (double élimination) + Championnat (groupes + playoffs).</li><li>Les Minors rapportent des points de stage pour le seeding du Major. Matchs en Best-of-3, 5 ou 7 selon le tour.</li><li>Gagne du temps : « Simuler le match » ou « Jusqu'au prochain tournoi ».</li><li>Composez vos 4 titulaires, réglez vos tactiques par mode, gérez moral, forme et fatigue.</li><li>Entraînez vos jeunes pépites, boostez votre staff, négociez des contrats.</li><li>Respectez le plafond salarial (${fmtK(CAP)}) et vos objectifs pour garder la confiance du board.</li></ul></div></div>
+ ${NET.on?`<div class="card" style="margin-top:14px"><h3>Classements en ligne</h3><div class="row"><span>Pseudo : <b>${esc(NET.name()||'—')}</b></span><button class="btn sm" onclick="A.askName(()=>render())">${NET.name()?'Modifier':'Choisir'}</button><button class="btn sm" onclick="A.lb()">🌍 Voir les classements</button>${NET.uid()?'<button class="btn sm dan" onclick="A.forget()">Supprimer mes scores en ligne</button>':''}</div><p class="mut" style="margin:8px 0 0;font-size:13px">Rien n'est envoyé tant que tu ne publies pas un score. Seuls ton pseudo, ton score et un identifiant aléatoire sont enregistrés.</p></div>`:''}
  <div class="card" style="margin-top:14px"><h3>Rythme de jeu</h3><label class="row" style="cursor:pointer"><input type="checkbox" ${G&&G.opt&&G.opt.auto?'checked':''} onchange="A.setOpt('auto',this.checked)"> <span>Simulation automatique : « Jouer » simule directement le match, sans aperçu (les enjeux restent affichés sur le tableau de bord).</span></label></div>
  <div class="card" style="margin-top:14px"><h3>Son</h3><div class="row"><button class="btn sm sndbtn" onclick="A.sound()">${SFX.muted()?'🔇':'🔊'}</button><label class="mut">Musique <input type="range" min="0" max="1" step=".05" value="${SFX.cfg.m}" oninput="SFX.setVol('m',+this.value)"></label><label class="mut">Effets <input type="range" min="0" max="1" step=".05" value="${SFX.cfg.s}" oninput="SFX.setVol('s',+this.value)"></label><label class="mut">Ambiance <select class="sel" onchange="A.soundTheme(this.value)">${[['classic','Classique'],['chill','Chill'+(ED.public&&!premium()?' (Premium)':'')],['synth','Synthwave'+(ED.public&&!premium()?' (Premium)':'')]].map(([k,l])=>`<option value="${k}" ${SFX.cfg.th===k?'selected':''}>${l}</option>`).join('')}</select></label></div>
 ${ED.public?`<div class="row" style="margin-top:10px"><button class="btn warn" onclick="A.premium()">${premium()?'Premium actif ✔':'Passer Premium'}</button><button class="btn" onclick="A.cookies()">Gérer les cookies</button></div>`:''}</div>
@@ -1186,7 +1244,7 @@ function openSeasonEnd(){
  const h=G.hist[G.hist.length-1];if(!h)return;
  openModal(()=>`<div class="mh"><h2>Fin de saison ${h.season}</h2><button class="btn x" onclick="A.close()">✕</button></div>
  <div class="hero" style="text-align:center"><div class="mut" style="letter-spacing:.3em">CHAMPION</div><div style="margin:8px 0">${h.champs?bdg(h.champs,1):''}</div><div class="tn" style="font:800 28px 'Oxanium','Rajdhani',sans-serif">${h.champs?tname(h.champs):'—'}</div>${h.mvp?`<p class="mut">MVP de la saison : <b class="acc">${h.mvp.tag}</b> — rating ${h.mvp.r}</p>`:''}</div>
- ${G.fired?`<div class="card bad" style="margin-top:12px"><b>Le board vous a licencié.</b> La confiance est tombée à ${Math.round(G.board.conf)}%. Vous pouvez recommencer une carrière ou continuer en "mode bac à sable".</div><div class="row" style="margin-top:12px"><button class="btn dan" onclick="A.reset()">Nouvelle carrière</button><button class="btn" onclick="G.fired=false;G.board.conf=40;A.close()">Continuer quand même</button></div>`:`<p>Consultez vos messages pour le bilan du board puis préparez l'intersaison.</p><div class="row"><button class="btn pri" onclick="A.close();A.view('market')">Aller au marché</button><button class="btn" onclick="A.close()">Fermer</button></div>`}`)}
+ ${G.fired?`<div class="card bad" style="margin-top:12px"><b>Le board vous a licencié.</b> La confiance est tombée à ${Math.round(G.board.conf)}%. Vous pouvez recommencer une carrière ou continuer en "mode bac à sable".</div><div class="row" style="margin-top:12px"><button class="btn dan" onclick="A.reset()">Nouvelle carrière</button><button class="btn" onclick="G.fired=false;G.board.conf=40;A.close()">Continuer quand même</button></div>`:`<p>Consultez vos messages pour le bilan du board puis préparez l'intersaison.</p><div class="row"><button class="btn pri" onclick="A.close();A.view('market')">Aller au marché</button><button class="btn" onclick="A.close()">Fermer</button></div>${mgrDone()?worldBtns('manager'):''}`}`)}
 
 /* ---------- looks et avatars (SVG dessiné maison) ---------- */
 const ROLE_C={SMG:'#ff9a5a',AR:'#6cc4ff',FLEX:'#d9a8ff'},ROLE_S={SMG:'SMG',AR:'AR',FLEX:'FLX'};
@@ -1428,11 +1486,11 @@ function renderHome(){
  const sample=sp&&sp.p&&sp.p.look?sp.p.look:randomLook();
  const blips=[[62,28,0],[74,52,1.1],[58,66,2.2],[80,34,3.1],[68,44,.6],[52,38,1.8]].map(([x,y,d])=>`<b class="blip" style="left:${x}%;top:${y}%;animation-delay:${d}s"></b>`).join('');
  app.innerHTML=`<div class="home"><div class="hbg"><div class="hgrid"></div><div class="radar"><i class="sweep"></i>${blips}</div><div class="streaks"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="hshade"></div><div class="scan"></div>
- <div class="hnav"><div class="hlogo">${ED.logoHTML}</div><div class="row"><span class="pill nonoff">⚠ ${ED.nonoff}</span>${ED.public?'':`<span class="mut" style="font-size:13px">Équipes :</span><button class="btn sm ${NAMESET==='real'?'pri':''}" onclick="A.nameset2('real')">Réelles</button><button class="btn sm ${NAMESET==='fiction'?'pri':''}" onclick="A.nameset2('fiction')">Fictives</button>`}<button class="btn sm" onclick="A.howto()">Comment jouer</button>${soundBtn()}</div></div>
+ <div class="hnav"><div class="hlogo">${ED.logoHTML}</div><div class="row"><span class="pill nonoff">⚠ ${ED.nonoff}</span>${ED.public?'':`<span class="mut" style="font-size:13px">Équipes :</span><button class="btn sm ${NAMESET==='real'?'pri':''}" onclick="A.nameset2('real')">Réelles</button><button class="btn sm ${NAMESET==='fiction'?'pri':''}" onclick="A.nameset2('fiction')">Fictives</button>`}<button class="btn sm" onclick="A.lb()">🌍 Classements</button><button class="btn sm" onclick="A.howto()">Comment jouer</button>${soundBtn()}</div></div>
  <div class="hhero"><div class="eyebrow">${ED.eyebrow}</div>
   <h1 class="glitch" data-t="${ED.logoText}">${ED.logoHTML}</h1>
   <p class="hsub">Dirige une franchise… ou deviens <b>le</b> joueur que toute la ligue redoute. Une seule scène, deux façons d'écrire l'histoire.</p>
-  <div class="hcards">
+  ${dfHomeCard()}<div class="hcards">
    <div class="mcard m1" onclick="A.newManager()"><div class="mglow"></div><div class="mico"><svg viewBox="0 0 64 64" width="84" height="84"><rect x="10" y="12" width="44" height="40" rx="5" fill="#17212f" stroke="#b8ff2c" stroke-width="2.5"/><path d="M18 40 L28 30 L36 36 L48 22" fill="none" stroke="#b8ff2c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="40" r="2.6" fill="#b8ff2c"/><circle cx="28" cy="30" r="2.6" fill="#b8ff2c"/><circle cx="36" cy="36" r="2.6" fill="#b8ff2c"/><circle cx="48" cy="22" r="2.6" fill="#b8ff2c"/><rect x="18" y="45" width="14" height="3" rx="1.5" fill="#3a4a5e"/></svg></div>
     <h2>CARRIÈRE MANAGER</h2><p>Recrute, entraîne, compose tes tactiques mode par mode et mène ta franchise au titre.</p>
     <div class="row"><button class="btn pri">Nouvelle partie ▶</button>${sm?`<button class="btn" onclick="event.stopPropagation();A.continue('manager')">Reprendre · ${esc(sm.t)} · S${sm.season}</button>`:''}</div></div>
@@ -1444,7 +1502,7 @@ function renderHome(){
    ${hof.length?`<div class="hfeat hof"><b>🏛️ Hall of Fame</b>${hof.map(h=>`<span>${esc(h.tag)} · ${esc(h.title)} (${h.legacy})</span>`).join('')}</div>`:''}</div>
  </div>
  <div class="ticker"><div class="tk">${[...ED.ticker,...ED.ticker].map(t=>`<span>${t}</span>`).join('')}</div></div>
- <div class="hfoot">${ED.foot}${monetFooter()}</div></div>${adSlot('home')}`}
+ <div class="hfoot">${ED.foot}${monetFooter()}</div></div>${adSlot('home')}`;dfHomeAfter()}
 
 /* =========================================================
    CARRIÈRE JOUEUR — données
@@ -1869,7 +1927,7 @@ function careerOffers(){
  return[...ex,own,...out]}
 VIEWS.pcareer=()=>{
  const c=G.car,p=P(G.pid),lg=legacy(),gp=goalProgress();
- return`<div class="h1">Palmarès <small>${esc(p.tag)}</small></div><div class="grid g3">
+ return`<div class="h1">Palmarès <small>${esc(p.tag)}</small></div>${worldBtns('player')}<div class="grid g3" style="margin-top:14px">
  <div class="card"><h3>Légende</h3><div style="font:800 44px 'Oxanium','Rajdhani',sans-serif" class="acc">${lg}</div><b>${legacyTitle(lg)}</b>${bar(Math.min(100,lg/170*100),'var(--team)')}<div class="mut" style="margin-top:6px;font-size:13px">Rookie oublié → Joueur solide → Pro confirmé → Superstar → Légende vivante → GOAT</div></div>
  <div class="card"><h3>Trophées</h3><div class="kv"><span>🏆 Championnats</span><b>${c.awards.champs}</b><span>🏅 Majors</span><b>${c.awards.majors}</b><span>⭐ MVP de saison</span><b>${c.awards.mvp}</b><span>🎖️ MVP de match</span><b>${c.mvps||0}</b><span>Saisons pro</span><b>${c.seasons.length}</b></div></div>
  <div class="card"><h3>Rêve ultime</h3><div class="row"><span style="font-size:32px">${GOALS[c.goal].ic}</span><div><b>${GOALS[c.goal].n}</b><div class="mut">${gp.txt}</div></div></div>${bar(gp.pct,'var(--team)')}</div></div>
@@ -1913,7 +1971,7 @@ function endCareer(){
  A.locked=true;
  openModal(()=>`<div class="mh"><h2>Fin de carrière</h2></div><div class="hero" style="text-align:center">${avatarSVG(p.look,p.role,120)}<h2 style="font-size:30px;margin-top:6px">${esc(p.tag)}</h2><div class="mut">${c.seasons.length} saison${c.seasons.length>1?'s':''} pro · ${p.age} ans</div><div style="font:800 54px 'Oxanium','Rajdhani',sans-serif" class="acc">${lg}</div><b style="font-size:22px">${ti}</b>
  <div class="kv" style="max-width:340px;margin:12px auto 0;text-align:left"><span>🏆 Championnats</span><b>${c.awards.champs}</b><span>🏅 Majors</span><b>${c.awards.majors}</b><span>⭐ MVP de saison</span><b>${c.awards.mvp}</b><span>Pic OVR</span><b>${c.peak}</b><span>Abonnés</span><b>${c.fans.toLocaleString('fr-FR')}</b><span>Rêve « ${GOALS[c.goal].n} »</span><b>${c.goalDone?'✔ accompli':'✘ raté'}</b></div></div>
- <div class="row" style="margin-top:14px;justify-content:center"><button class="btn pri" onclick="A.locked=false;A.newPlayer()">Nouvelle carrière</button><button class="btn" onclick="A.locked=false;A.home()">Accueil</button></div>`,'sm')}
+ <div class="row" style="margin-top:14px;justify-content:center"><button class="btn warn" onclick="A.pubLegend()">🌍 Publier ma légende</button><button class="btn pri" onclick="A.locked=false;A.newPlayer()">Nouvelle carrière</button><button class="btn" onclick="A.locked=false;A.home()">Accueil</button></div>`,'sm')}
 
 
 /* =========================================================
@@ -1951,7 +2009,7 @@ Object.assign(A,{
  continue(mode){const s=loadSave(mode);if(!s)return;if(!s.evs){toast('Cette sauvegarde date d\'avant le nouveau format de saison : lance une nouvelle partie.',1);return}G=s;G.mode=G.mode||'manager';ui.screen='game';menuSel=null;setObjectives();render();if(G.mode==='player')setTimeout(openEvent,60)},
  nameset2(v){NAMESET=v;try{localStorage.setItem('cc_ns',v)}catch(e){}renderHome()},
  reset(){if(!confirm('Supprimer cette partie ? Cette action est définitive.'))return;try{localStorage.removeItem(G.mode==='player'?KEY_P:KEY_M)}catch(e){}A.home()},
- howto(){openModal(()=>`<div class="mh"><h2>Comment jouer</h2><button class="btn x" onclick="A.close()">✕</button></div><div class="grid g2"><div class="card"><h3>🧠 Carrière Manager</h3><ul class="how"><li>Choisis une franchise et dirige-la sur plusieurs saisons.</li><li>Compose tes 4 titulaires, règle les tactiques de chaque mode.</li><li>Recrute, entraîne les jeunes, gère le plafond salarial et le board.</li></ul></div><div class="card"><h3>🎮 Carrière Joueur</h3><ul class="how"><li>Crée ton joueur : apparence, rôle, origine, personnalité, traits.</li><li>Chaque semaine : choisis ton programme (aim, VOD, stream, repos…).</li><li>Des événements te laissent faire des choix qui changent ta carrière.</li><li>Gagne ta place, signe de meilleurs contrats, vise la légende.</li></ul></div></div><p class="mut">Format de la saison : 4 Stages · 2 Minors (Pro-Am, groupes GSL) · 4 Majors (double élimination) · Championnat. Matchs en Best-of-3, 5 ou 7 ; tu peux les suivre en direct ou les simuler d'un clic.</p>`)},
+ howto(){openModal(()=>`<div class="mh"><h2>Comment jouer</h2><button class="btn x" onclick="A.close()">✕</button></div><div class="grid g2"><div class="card"><h3>🧠 Carrière Manager</h3><ul class="how"><li>Choisis une franchise et dirige-la sur plusieurs saisons.</li><li>Compose tes 4 titulaires, règle les tactiques de chaque mode.</li><li>Recrute, entraîne les jeunes, gère le plafond salarial et le board.</li></ul></div><div class="card"><h3>⚡ Défi du jour</h3><ul class="how"><li>Le même draft et les mêmes adversaires pour tous les joueurs, chaque jour.</li><li>4 joueurs, un budget, trois matchs : choisis ta tactique carte par carte.</li><li>Partage ta grille, défie un ami avec un code, compare-toi au classement mondial.</li></ul></div><div class="card"><h3>🎮 Carrière Joueur</h3><ul class="how"><li>Crée ton joueur : apparence, rôle, origine, personnalité, traits.</li><li>Chaque semaine : choisis ton programme (aim, VOD, stream, repos…).</li><li>Des événements te laissent faire des choix qui changent ta carrière.</li><li>Gagne ta place, signe de meilleurs contrats, vise la légende.</li></ul></div></div><p class="mut">Format de la saison : 4 Stages · 2 Minors (Pro-Am, groupes GSL) · 4 Majors (double élimination) · Championnat. Matchs en Best-of-3, 5 ou 7 ; tu peux les suivre en direct ou les simuler d'un clic.</p>`)},
  /* création */
  cr(k,v){CR[k]=v;if(k!=='pick'){CR.offers=[];CR.pick=null}render()},
  crLook(k,v){CR.look[k]=(k==='bg')?+v:v;render()},
@@ -2418,13 +2476,343 @@ function autoResult(lines,fromLeague){
  <div class="tw" style="margin-top:10px"><table>${lines.slice(-14).map(x=>`<tr class="clk" onclick="A.report('${x.mid}')"><td>${x.l}</td><td>${bdg(x.opp)} ${T(x.opp).name}</td><td class="c"><b>${x.sc}</b></td><td class="${x.won?'good':'bad'}">${x.won?'V':'D'}</td></tr>`).join('')||'<tr><td class="mut">Aucun match pour ton équipe.</td></tr>'}</table></div>
  <div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn" onclick="A.close();A.view('event')">Voir les tournois</button><button class="btn pri" onclick="A.closeQR()">Continuer ▶</button></div>`,'sm')}
 
+/* =========================================================
+   v6 — DÉFI (draft identique pour tous), CLASSEMENTS EN LIGNE, PARTAGE
+   ========================================================= */
+const h32=s=>{let h=2166136261>>>0;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0}h^=h>>>15;h=Math.imul(h,2246822519)>>>0;h^=h>>>13;return h>>>0};
+function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function withSeed(s,fn){const o=RNG;RNG=mulberry(h32(s));try{return fn()}finally{RNG=o}}
+const parisParts=t=>{const o={};new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(new Date(t||Date.now())).forEach(p=>o[p.type]=p.value);return o};
+const parisDay=t=>{const p=parisParts(t);return`${p.year}-${p.month}-${p.day}`};
+const DF_EPOCH='2026-11-11';
+const dayNo=d=>Math.round((Date.parse(d+'T00:00:00Z')-Date.parse(DF_EPOCH+'T00:00:00Z'))/864e5)+1;
+const dayFr=d=>{const[y,m,j]=d.split('-');return`${+j} ${['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'][+m-1]}`};
+const nextIn=()=>{const p=parisParts(),s=86400-((+p.hour%24)*3600+(+p.minute)*60+(+p.second)),z=n=>String(n).padStart(2,'0');return`${z(Math.floor(s/3600))}:${z(Math.floor(s%3600/60))}:${z(s%60)}`};
+const nfr=n=>Math.round(n).toLocaleString('fr-FR');
+const flag=c=>{try{return String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0)))}catch(e){return c}};
+const KEY_D='cc_d_v1',KEY_U='cc_u_v1',KEY_N='cc_n_v1';
+const NAME_RE=/^[\p{L}\p{N}][\p{L}\p{N} _.\-]{1,14}[\p{L}\p{N}]$/u;
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+let DS=(()=>{const d={runs:{},streak:0,last:null,best:0,played:0,wins:0,hist:[]};try{Object.assign(d,JSON.parse(localStorage.getItem(KEY_D)||'{}'))}catch(e){}return d})();
+const dfStore=()=>lsSet(KEY_D,JSON.stringify(DS));
+function dfPrune(){const ks=Object.keys(DS.runs).sort((a,b)=>(DS.runs[b].ts||0)-(DS.runs[a].ts||0));ks.slice(24).forEach(k=>delete DS.runs[k])}
+let DF=null,DF_VS=null;
+const DF_ROUNDS=['Quart de finale','Demi-finale','Finale'],DF_RS=['QUART','DEMI','FINALE'],DF_WIN=[300,500,900],DF_TM=3.5;
+const DF_TIERS=[[3000,'LÉGENDE','#ffd24a'],[2400,'DIAMANT','#67e8f9'],[1600,'OR','#fbbf24'],[800,'ARGENT','#cbd5e1'],[0,'BRONZE','#d08a4e']];
+const dfTier=s=>DF_TIERS.find(t=>s>=t[0]);
+const siteURL=()=>ED.public&&location.protocol.startsWith('http')?location.origin+location.pathname.replace(/index\.html$/,''):'';
+
+/* ---------- réseau : classements ---------- */
+const NET={
+ on:ED.public&&location.protocol.startsWith('http'),
+ name:()=>lsGet(KEY_N)||'',
+ uid(make){let u=lsGet(KEY_U);if(!u&&make){const a=new Uint8Array(20);crypto.getRandomValues(a);u=[...a].map(x=>'abcdefghijklmnopqrstuvwxyz0123456789'[x%36]).join('');lsSet(KEY_U,u)}return u||''},
+ async call(path,body){if(!NET.on)return null;const c=new AbortController(),t=setTimeout(()=>c.abort(),7000);
+  try{const r=await fetch(path,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:c.signal}:{signal:c.signal});const j=await r.json();return j}catch(e){return null}finally{clearTimeout(t)}},
+ top:(board,key,n)=>NET.call(`/api/top?board=${board}&key=${encodeURIComponent(key)}&n=${n==null?50:n}${NET.uid()?'&uid='+NET.uid():''}`),
+ post:(board,key,score,meta)=>NET.call('/api/score',{board,key,uid:NET.uid(true),name:NET.name(),score,meta:meta||''})
+};
+const pctTxt=d=>{if(!d||!d.me)return'';const r=`${d.me.rank}ᵉ sur ${nfr(d.total)}`;if(d.total<5)return r;const p=Math.max(1,Math.ceil(d.me.rank/d.total*100));return p<=50?`Top ${p} % · ${r}`:r};
+const lbMeta=m=>!m?'':/^[VD ]+( 🏆)?$/.test(m)?` <span class="lbp">${[...m].map(c=>c==='V'?'<i class="w"></i>':c==='D'?'<i class="l"></i>':c===' '?'<i class="s"></i>':'').join('')}${m.endsWith('🏆')?' 👑':''}</span>`:` <span class="mut lbm">${esc(m)}</span>`;
+const dayStats=d=>d&&d.total>=3?`<p class="mut" style="margin:6px 0 0">Moyenne du jour : <b>${nfr(d.avg)} pts</b> · ${d.champs?`${Math.round(d.champs/d.total*100)} % des joueurs ont gagné la finale`:"personne n'a encore gagné la finale"}.</p>`:'';
+function lbTable(d,unit){
+ if(!d)return'<p class="mut">Classement indisponible pour le moment (hors ligne ?).</p>';
+ if(d.error)return'<p class="mut">Classement indisponible pour le moment.</p>';
+ if(!d.top.length)return'<p class="mut">Personne n\'a encore publié de score. Sois le premier !</p>';
+ return`<div class="tw"><table class="lbt"><tr><th>#</th><th>Joueur</th><th class="rt">${unit||'Score'}</th></tr>${d.top.map((r,i)=>`<tr class="${r.me?'me':''}"><td>${i<3?['🥇','🥈','🥉'][i]:i+1}</td><td><b>${esc(r.name)}</b>${lbMeta(r.meta)}</td><td class="rt"><b>${nfr(r.score)}</b></td></tr>`).join('')}${d.me&&!d.top.some(r=>r.me)?`<tr class="me"><td>${d.me.rank}</td><td><b>${esc(d.me.name)}</b> <span class="mut lbm">toi</span></td><td class="rt"><b>${nfr(d.me.score)}</b></td></tr>`:''}</table></div><p class="mut" style="margin:8px 0 0">${d.me?`<b class="acc">${pctTxt(d)}</b>`:`${nfr(d.total)} joueur${d.total>1?'s':''} classé${d.total>1?'s':''}.`}</p>`}
+function lbLoad(id,board,key,unit,n){const el=document.getElementById(id);if(!el)return;
+ if(!NET.on){el.innerHTML='<p class="mut">Le classement en ligne est disponible sur la version web du jeu.</p>';return}
+ el.innerHTML='<p class="mut">Chargement du classement…</p>';
+ (board==='week'?NET.call('/api/week'+(NET.uid()?'?uid='+NET.uid():'')):NET.top(board,key,n||50)).then(d=>{const e=document.getElementById(id);if(e&&e.dataset.k===board+key)e.innerHTML=lbTable(d,unit)+(board==='daily'||board==='seed'?dayStats(d):'')})}
+const lbBox=(id,board,key)=>`<div id="${id}" data-k="${board+key}"></div>`;
+const LB_TABS=[['daily','⚡ Défi du jour'],['week','📅 7 derniers jours'],['legend','🎮 Légendes (joueur)'],['manager','🧠 Managers']];
+Object.assign(A,{
+ lb(tab){ui.lbTab=tab||ui.lbTab||'daily';const t=ui.lbTab,key=t==='daily'?parisDay():'all';
+  openModal(()=>`<div class="mh"><h2>🌍 Classements mondiaux</h2><button class="btn x" onclick="A.close()">✕</button></div>
+  <div class="tabs">${LB_TABS.map(([k,l])=>`<button class="${k===t?'on':''}" onclick="A.lb('${k}')">${l}</button>`).join('')}</div>
+  <p class="mut" style="margin:0 0 10px">${t==='daily'?`Défi du jour #${dayNo(key)} — ${dayFr(key)}. Tout le monde joue le même draft et les mêmes adversaires.`:t==='week'?'Total des scores du défi du jour sur les 7 derniers jours : la régularité paie.':t==='legend'?'Score de légende des carrières Joueur (publié depuis « Palmarès » ou à la retraite).':'Meilleure saison des carrières Manager (points de ligue + titres, publiée à l\'intersaison).'}</p>
+  ${lbBox('lbbox',t,key)}
+  <div class="row" style="margin-top:14px">${NET.on?`<span class="mut">Pseudo : <b>${esc(NET.name()||'—')}</b></span><button class="btn sm" onclick="A.askName(()=>A.lb())">${NET.name()?'Modifier':'Choisir un pseudo'}</button>${NET.uid()?`<button class="btn sm dan" onclick="A.forget()">Supprimer mes scores en ligne</button>`:''}`:''}${t==='daily'||t==='week'?`<button class="btn pri" style="margin-left:auto" onclick="A.defi()">Jouer le défi ▶</button>`:''}</div>`,'sm');
+  lbLoad('lbbox',t,key,t==='legend'?'Légende':t==='week'?'Total':'Score')},
+ askName(then){ui.nameThen=then||null;const cur=NET.name();
+  openModal(()=>`<div class="mh"><h2>Ton pseudo</h2><button class="btn x" onclick="A.close()">✕</button></div>
+  <p>Choisis le pseudo affiché dans les classements (3 à 16 caractères : lettres, chiffres, espace, « _ . - »).</p>
+  <input id="nmi" class="inp" maxlength="16" value="${esc(cur)}" placeholder="Ton pseudo" style="width:100%;font-size:18px;padding:10px 12px" onkeydown="if(event.key==='Enter')A.setName()">
+  <p class="mut" style="font-size:13px;margin:10px 0 0">En publiant un score, ton pseudo et ton score deviennent visibles par tous. Un identifiant aléatoire est enregistré dans ton navigateur pour retrouver tes scores. N'utilise pas ton vrai nom. ${ED.public?'<a href="privacy.html" target="_blank" rel="noopener">Confidentialité</a>':''}</p>
+  <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" onclick="A.close()">Annuler</button><button class="btn pri" onclick="A.setName()">Valider</button></div>`,'sm');
+  setTimeout(()=>{const i=$('#nmi');if(i)i.focus()},50)},
+ setName(){const v=($('#nmi').value||'').normalize('NFKC').replace(/\s+/g,' ').trim();if(!NAME_RE.test(v))return toast('Pseudo invalide : 3 à 16 caractères, lettres et chiffres.',1);
+  lsSet(KEY_N,v);const th=ui.nameThen;ui.nameThen=null;A.close();if(th)th()},
+ async forget(){if(!confirm('Supprimer définitivement tous tes scores des classements en ligne ?'))return;const r=await NET.call('/api/forget',{uid:NET.uid()});
+  if(r&&r.ok){try{localStorage.removeItem(KEY_U)}catch(e){}Object.values(DS.runs).forEach(x=>x.sent=false);dfStore();toast('Tes scores en ligne ont été supprimés.');A.lb()}else toast('Suppression impossible pour le moment.',1)},
+ async publish(board,key,score,meta,after){
+  if(!NET.on)return toast('Le classement en ligne est disponible sur la version web du jeu.',1);
+  if(!NET.name())return A.askName(()=>A.publish(board,key,score,meta,after));
+  const r=await NET.post(board,key,score,meta);
+  if(!r)return toast('Connexion impossible : réessaie plus tard.',1);
+  if(r.error==='name'){toast('Ce pseudo est refusé : choisis-en un autre.',1);return A.askName(()=>A.publish(board,key,score,meta,after))}
+  if(r.error)return toast(r.error==='rate'?'Trop de requêtes : réessaie dans quelques minutes.':'Score refusé par le serveur.',1);
+  toast(`🌍 Score publié — ${pctTxt(r)}`);if(after)after(r)}
+});
+
+/* ---------- monde du défi (déterministe à partir de la graine) ---------- */
+function dfWorld(seed){
+ withSeed('world|'+seed,()=>{
+  genLeague();G.mode='defi';
+  const rk=proIds().sort((a,b)=>teamOvr(b)-teamOvr(a));
+  const opps=[rk[ri(6,9)],rk[ri(2,4)],rk[ri(0,1)]];
+  const tg=[86,84,82,79,78,77,76,75,72,71,70,69,68,64,62,60],roles=shuffle(['SMG','SMG','SMG','SMG','SMG','SMG','AR','AR','AR','AR','AR','AR','FLEX','FLEX','FLEX','FLEX']);
+  const pool=tg.map((t,i)=>{const p=genPlayer(t,ri(18,29),roles[i]);p.morale=ri(48,86);p.form=ri(28,82);p.fatigue=ri(5,42);p.wage=Math.round(salaryFor(ovr(p))*(.9+rnd()*.24)/5)*5;return p});
+  pool.sort((a,b)=>ovr(b)-ovr(a)||a.tag.localeCompare(b.tag));
+  G.teams.YOU={id:'YOU',name:'Ta sélection',short:'TOI',color:'#b8ff2c',rep:60,amateur:true,balance:0,staff:{coach:2,analyst:2,psy:1,scout:1},lineup:[],tactics:{hp:'bal',snd:'bal',ovl:'bal'},chem:50,training:{focus:'bal',intensity:'normal'},form:[],titles:0,majors:0};
+  G.me='YOU';G.mgr=NET.name()||'Toi';
+  DF.pool=pool;DF.base=pool.map(p=>({morale:p.morale,form:p.form,fatigue:p.fatigue}));DF.opps=opps;DF.budget=1150+ri(0,4)*25})}
+function dfChem(picks){const c={};picks.forEach(i=>{const n=DF.pool[i].nat;c[n]=(c[n]||0)+1});let b=0;const syn=[];for(const n in c)if(c[n]>=2){const v=c[n]*(c[n]-1)/2*7;b+=v;syn.push({n,k:c[n],v})}return{chem:clamp(50+b,50,78),syn}}
+const dfSpent=()=>DF.run.picks.reduce((s,i)=>s+DF.pool[i].wage,0);
+function dfSimMap(r,i,mode,c,n){
+ const R=DF.run,opp=DF.opps[r];
+ return withSeed(['m',DF.seed,R.picks.join('.'),R.ch.slice(0,n+1).map(x=>x.t+x.tm).join(''),n].join('|'),()=>{
+  const d=teamStrength(opp,mode,'bal').S-teamStrength('YOU',mode,'bal').S,tb=d>3?'cau':d<-3?'agr':pick(['bal','bal','agr','cau']);
+  const SA=teamStrength('YOU',mode,c.t),SB=teamStrength(opp,mode,tb);if(c.tm)SA.S+=DF_TM;
+  const mp=simMap(mode,'YOU',opp,mapProb(SA,SB),MAP_NAMES[(h32(DF.seed)+r*5+i)%MAP_NAMES.length]);
+  mp.SA=SA.S;mp.SB=SB.S;mp.tb=tb;mp.t=c.t;mp.tm=c.tm;return mp})}
+function dfApply(){
+ const R=DF.run;DF.rounds=[];DF.tm=2;DF.over=false;DF.champ=false;
+ DF.pool.forEach((p,i)=>{Object.assign(p,DF.base[i]);p.team=null});
+ const Y=G.teams.YOU;Y.lineup=[];Y.chem=50;DF.syn=[];
+ if(R.picks.length===4){R.picks.forEach(i=>DF.pool[i].team='YOU');Y.lineup=R.picks.map(i=>DF.pool[i].id);const c=dfChem(R.picks);Y.chem=c.chem;DF.syn=c.syn}
+ let r=0,cur=null;
+ if(R.locked)for(let n=0;n<R.ch.length&&!DF.over;n++){
+  if(!cur){cur={r,opp:DF.opps[r],maps:[],wa:0,wb:0,done:false};DF.rounds.push(cur)}
+  const c=R.ch[n],i=cur.maps.length,mode=MODE_SEQ[5][i],mp=dfSimMap(r,i,mode,c,n),won=mp.sa>mp.sb;
+  cur.maps.push(mp);won?cur.wa++:cur.wb++;if(c.tm)DF.tm--;
+  Y.lineup.map(P).forEach(p=>{const st=mp.stats[p.id];p.fatigue=clamp(p.fatigue+(mode==='hp'?5:3),0,100);p.morale=clamp(p.morale+(won?4:-3),20,99);p.form=clamp(p.form+(st&&st.r>=1.1?3:st&&st.r<.85?-3:0),5,95)});
+  if(cur.wa===3||cur.wb===3){cur.done=true;
+   if(cur.wb===3)DF.over=true;else{r++;if(r===3){DF.over=true;DF.champ=true}else{Y.lineup.map(P).forEach(p=>p.fatigue=clamp(p.fatigue-8,0,100));cur=null}}}}
+ DF.r=Math.min(r,2);DF.cur=cur&&!cur.done?cur:null;
+ const sc=dfScore();DF.score=sc.total;DF.bd=sc}
+function dfScore(){
+ const b={maps:0,close:0,rounds:0,sweep:0,tm:0,budget:0};
+ DF.rounds.forEach(rd=>{rd.maps.forEach(mp=>{const tg={hp:250,snd:6,ovl:5}[mp.mode];if(mp.sa>mp.sb)b.maps+=100+Math.round(50*(mp.sa-mp.sb)/tg);else b.close+=Math.round(30*mp.sa/tg)});
+  if(rd.wa===3){b.rounds+=DF_WIN[rd.r];if(rd.wb===0)b.sweep+=120}});
+ if(DF.run.locked)b.budget=Math.min(100,Math.round((DF.budget-dfSpent())/4));
+ if(DF.champ)b.tm=DF.tm*80;
+ b.total=b.maps+b.close+b.rounds+b.sweep+b.tm+b.budget;return b}
+const dfGrid=()=>DF.rounds.map(rd=>rd.maps.map(mp=>mp.sa>mp.sb?'🟩':'🟥').join(''));
+function dfFinalize(){
+ const R=DF.run;if(R.done)return;R.done=true;R.score=DF.score;R.champ=DF.champ;R.grid=dfGrid();
+ DS.played++;if(DF.champ)DS.wins++;DS.best=Math.max(DS.best,DF.score);
+ if(DF.kind==='daily'){const y=parisDay(Date.now()-864e5);DS.streak=DS.last===y?DS.streak+1:DS.last===DF.seed?DS.streak:1;DS.last=DF.seed;DS.hist.unshift({d:DF.seed,s:DF.score,c:DF.champ?1:0});DS.hist=DS.hist.slice(0,60)}
+ dfStore();if(NET.on&&NET.name())dfSend()}
+const dfMeta=()=>dfGrid().map(g=>g.replace(/🟩/g,'V').replace(/🟥/g,'D')).join(' ')+(DF.champ?' 🏆':'');
+async function dfSend(){const R=DF.run;if(!R.done)return;const r=await NET.post(DF.kind==='daily'?'daily':'seed',DF.seed,R.score,dfMeta());
+ if(r&&r.ok){R.sent=true;DF.rank=r;dfStore();if(ui.screen==='defi'&&DF.step==='done'){const e=$('#dfrank');if(e)e.innerHTML=`<b class="acc">${pctTxt(r)}</b>`;lbLoad('dflb',DF.kind==='daily'?'daily':'seed',DF.seed,'Score',10)}}
+ else if(r&&r.error==='name'){toast('Ce pseudo est refusé : choisis-en un autre.',1)}}
+function dfStart(seed,kind){
+ A.close();let run=DS.runs[seed];
+ if(!run){run=DS.runs[seed]={seed,kind,picks:[],locked:false,ch:[],done:false,score:0,sent:false,ts:Date.now()};dfPrune()}
+ DF={seed,kind,run,no:kind==='daily'?dayNo(seed):0,vs:DF_VS&&DF_VS.seed===seed?DF_VS:null,tac:'bal',useTm:false,last:null,anim:null};
+ dfWorld(seed);dfApply();if(DF.over&&!run.done)dfFinalize();
+ DF.step=run.done?'done':run.locked?'match':'draft';
+ ui.screen='defi';render();window.scrollTo(0,0);
+ if(!DS.rules){DS.rules=1;dfStore();A.dfRules()}}
+const dfTitle=()=>DF.kind==='daily'?`Défi du jour #${DF.no}`:`Défi entre amis · ${DF.seed.toUpperCase()}`;
+function dfShareText(){
+ const R=DF.run,g=R.grid||dfGrid(),u=siteURL(),t=dfTier(R.score);
+ const link=u?(DF.kind==='daily'?`${u}?d=jour`:`${u}?d=${DF.seed}&s=${R.score}${NET.name()?'&n='+encodeURIComponent(NET.name()):''}`):'';
+ return`${ED.title} — ${DF.kind==='daily'?`Défi du jour #${DF.no} (${dayFr(DF.seed)})`:`Défi ${DF.seed.toUpperCase()}`}\n${g.map((x,i)=>`${i===2?'🏆':'⚔️'} ${DF_ROUNDS[i].split(' ')[0]} ${x}`).join('\n')}\n${R.champ?'👑 Champion · ':''}Score : ${nfr(R.score)} pts · ${t[1]}${DF.kind==='daily'&&DS.streak>1?` · 🔥 série ${DS.streak} j`:''}${link?`\n${DF.kind==='daily'?'Fais mieux':'Bats-moi'} → ${link}`:''}`}
+
+/* ---------- écrans du défi ---------- */
+function renderDefi(){
+ const app=$('#app');app.className='solo';if(typeof homeStop==='function')homeStop();document.documentElement.style.setProperty('--team','#b8ff2c');if(window.Music)Music.set('game');
+ const st=DF.step,steps=['Draft',...DF_ROUNDS.map(x=>x.split(' ')[0]),'Score'],at=st==='draft'?0:st==='done'?4:1+DF.r;
+ app.innerHTML=`<div class="dfw"><div class="dftop"><button class="btn sm" onclick="A.home()">← Accueil</button><div class="dft"><b>⚡ ${dfTitle()}</b><span class="mut">${DF.kind==='daily'?dayFr(DF.seed)+' · même défi pour tous':'même draft pour tous ceux qui ont ce code'}</span></div><div class="dfsteps">${steps.map((s,i)=>`<i class="${i<at?'d':i===at?'on':''}">${s}</i>`).join('')}</div><button class="btn sm" onclick="A.dfRules()">? Règles</button></div>
+ ${DF.vs&&st!=='done'?`<div class="dfvs">🤝 <b>${esc(DF.vs.n)}</b> te défie : <b class="acc">${nfr(DF.vs.s)} pts</b> à battre.</div>`:''}
+ ${st==='draft'?dfDraftHTML():st==='match'?dfMatchHTML():dfDoneHTML()}</div>`;
+ if(st==='done'){lbLoad('dflb',DF.kind==='daily'?'daily':'seed',DF.seed,'Score',10)}}
+const dfCond=p=>[p.form>=65?'<span class="pill good" title="Forme élevée">🔥 En forme</span>':p.form<40?'<span class="pill bad" title="Forme basse">📉 Méforme</span>':'',p.fatigue>=32?'<span class="pill warn" title="Fatigue élevée">😴 Fatigué</span>':'',p.morale<56?'<span class="pill bad" title="Moral bas">😞 Moral bas</span>':p.morale>=78?'<span class="pill good" title="Moral élevé">😀 Confiant</span>':''].join('');
+function dfDraftHTML(){
+ const R=DF.run,spent=dfSpent(),left=DF.budget-spent,full=R.picks.length===4;
+ const card=(p,i)=>{const on=R.picks.includes(i),off=!on&&(full||p.wage>left);
+  return`<div class="dfp ${on?'on':''} ${off?'off':''}" onclick="A.dfPick(${i})"><div class="dfp1"><span class="chip r-${p.role}">${p.role}</span><b>${esc(p.tag)}</b><span class="dfnat" title="Même nationalité = bonus de chimie">${flag(p.nat)} ${p.nat}</span>${ovrB(Math.round(effOvr(p)))}</div>
+  <div class="dfp2">${['hp','snd','ovl'].map(m=>`<span><small>${MODE_S[m]}</small><b>${Math.round(effMode(p,m))}</b></span>`).join('')}<span class="dfwg"><small>Salaire</small><b>${fmtK(p.wage)}</b></span></div>
+  <div class="dfp3">${dfCond(p)||'<span class="mut" style="font-size:12px">État normal</span>'}</div></div>`};
+ const str=full?['hp','snd','ovl'].map(m=>teamStrength('YOU',m,'bal').S):null;
+ const oppRow=(o,i)=>`<div class="dfo"><div class="dfo1">${bdg(o)}<div><small>${DF_RS[i]}</small><b>${tname(o)}</b></div></div><div class="dfo2">${['hp','snd','ovl'].map((m,j)=>{const s=teamStrength(o,m,'bal').S;return`<span class="${str?(str[j]>=s?'good':'bad'):''}"><small>${MODE_S[m]}</small><b>${s.toFixed(1)}</b></span>`}).join('')}</div></div>`;
+ return`<div class="dfgrid"><div><div class="dfh"><h2>1 · Compose ton équipe</h2><p class="mut">Choisis <b>4 joueurs</b> sans dépasser le budget. Regarde les notes par mode, l'état de forme et les nationalités (deux joueurs du même pays = +7 de chimie). Au moins un SMG et un AR pour le bonus d'équilibre.</p></div>
+  <div class="dfpool">${DF.pool.map(card).join('')}</div></div>
+ <div class="dfside"><div class="card"><h3>Budget</h3><div class="dfbud"><b class="${left<0?'bad':''}">${fmtK(left)}</b><span class="mut">restant sur ${fmtK(DF.budget)}</span></div>${bar(clamp(spent/DF.budget*100,0,100),'var(--acc)')}
+   <div class="dfslots">${[0,1,2,3].map(k=>{const i=R.picks[k],p=i!=null?DF.pool[i]:null;return p?`<div class="dfs on" onclick="A.dfPick(${i})"><span class="chip r-${p.role}">${p.role}</span><b>${esc(p.tag)}</b><span class="mut">${fmtK(p.wage)}</span><i>✕</i></div>`:`<div class="dfs"><span class="mut">Joueur ${k+1}</span></div>`}).join('')}</div>
+   ${full?`<div class="kv" style="margin-top:10px"><span>Chimie</span><b>${G.teams.YOU.chem}${DF.syn.length?` <span class="good">(${DF.syn.map(s=>`${flag(s.n)}×${s.k} +${s.v}`).join(' ')})</span>`:' <span class="mut">(aucun duo)</span>'}</b><span>Équilibre des rôles</span><b class="${roleBalance(R.picks.map(i=>DF.pool[i]))>=1?'good':roleBalance(R.picks.map(i=>DF.pool[i]))<0?'bad':'warn'}">${roleBalance(R.picks.map(i=>DF.pool[i]))>=1?'bon':roleBalance(R.picks.map(i=>DF.pool[i]))<0?'mauvais':'moyen'}</b><span>Ta force</span><b>${['hp','snd','ovl'].map((m,j)=>`${MODE_S[m]} ${str[j].toFixed(1)}`).join(' · ')}</b></div>`:`<p class="mut" style="margin:10px 0 0">Encore ${4-R.picks.length} joueur${4-R.picks.length>1?'s':''} à choisir.</p>`}
+   <button class="btn pri" style="width:100%;margin-top:12px" ${full&&left>=0?'':'disabled'} onclick="A.dfLock()">Valider et lancer le défi ▶</button><p class="mut" style="font-size:13px;margin:8px 0 0">La sélection est définitive : une seule tentative par défi.</p></div>
+  <div class="card"><h3>Tes adversaires</h3>${DF.opps.map(oppRow).join('')}<p class="mut" style="font-size:13px;margin:8px 0 0">Force par mode (vert = tu es devant). Trois matchs en 5 manches : une défaite et c'est fini.</p></div></div></div>`}
+function dfMatchHTML(){
+ const live=DF.cur;
+ const show=DF.anim?DF.anim.rd:(DF.last?DF.last.rd:null)||live||{r:DF.r,opp:DF.opps[DF.r],maps:[],wa:0,wb:0};
+ const an=DF.anim,wa=an?an.wa0:show.wa,wb=an?an.wb0:show.wb;
+ const pips=MODE_SEQ[5].map((m,i)=>{const mp=show.maps[i],cur=an?i===show.maps.length-1:(!show.done&&i===show.maps.length);const res=mp&&!(an&&i===show.maps.length-1)?(mp.sa>mp.sb?'w':'l'):'';return`<div class="dfpip ${res} ${cur?'cur':''}"><small>Carte ${i+1}</small><b>${MODE_S[m]}</b><span>${mp&&res?`${mp.sa}–${mp.sb}`:cur?'en jeu':'—'}</span></div>`}).join('');
+ const Y=G.teams.YOU.lineup.map(P),lastMp=an?an.mp:DF.last?DF.last.mp:null;
+ const roster=`<div class="card"><h3>Ton équipe <span class="r mut">chimie ${G.teams.YOU.chem}</span></h3>${Y.map(p=>{const st=lastMp&&lastMp.stats[p.id];return`<div class="dfr"><span class="chip r-${p.role}">${p.role}</span><b>${esc(p.tag)}</b>${st&&!an?`<span class="mut">${st.k}/${st.d}</span><b class="${st.r>=1.1?'good':st.r<.9?'bad':''}">${st.r.toFixed(2)}</b>`:'<span></span><span></span>'}<div class="dfr2"><span title="Fatigue">😴 ${bar(p.fatigue,bcol(p.fatigue,1))}</span><span title="Moral">🙂 ${bar(p.morale,bcol(p.morale))}</span></div></div>`}).join('')}<p class="mut" style="font-size:13px;margin:8px 0 0">La fatigue monte à chaque carte (surtout en ${MODE.hp}) ; le moral suit les résultats.</p></div>`;
+ let main='';
+ if(an){main=`<div class="card dfplay"><h3>Carte ${show.maps.length} · ${MODE[an.mp.mode]} · ${an.mp.map}</h3><div class="dfsc"><b id="dfsa">0</b><span>–</span><b id="dfsb">0</b></div><div id="dflog" class="dflog"></div></div>`}
+ else if(DF.last){const mp=DF.last.mp,won=mp.sa>mp.sb,lr=DF.last.rd,top=Object.keys(mp.stats).map(id=>({p:P(id),s:mp.stats[id]})).sort((a,b)=>b.s.r-a.s.r)[0];
+  main=`<div class="card dfres ${won?'w':'l'}"><h3>Carte ${lr.maps.indexOf(mp)+1} · ${MODE[mp.mode]} · ${mp.map}</h3><div class="dfsc"><b class="${won?'good':''}">${mp.sa}</b><span>–</span><b class="${won?'':'bad'}">${mp.sb}</b></div>
+   <div class="c"><b class="${won?'good':'bad'}" style="font-size:18px">${won?'Carte gagnée':'Carte perdue'}</b><div class="mut">Force ${mp.SA.toFixed(1)} contre ${mp.SB.toFixed(1)} · eux : ${TACT[mp.tb]}${mp.tm?' · ⏱ temps mort utilisé':''}${top?` · meilleur joueur : <b>${esc(top.p.tag)}</b> (${top.s.k}/${top.s.d})`:''}</div></div>
+   ${lr.done?`<div class="dfend ${lr.wa===3?'w':'l'}"><b>${lr.wa===3?(lr.r===2?'🏆 CHAMPION DU DÉFI !':`✅ ${DF_ROUNDS[lr.r]} gagné${lr.r===1?'e':''} ${lr.wa}–${lr.wb}`):`❌ Éliminé en ${DF_ROUNDS[lr.r].toLowerCase()} (${lr.wa}–${lr.wb})`}</b></div>
+   <div class="row" style="justify-content:center;margin-top:12px">${DF.over?`<button class="btn pri" onclick="A.dfDone()">Voir mon score ▶</button>`:`<button class="btn pri" onclick="A.dfNext()">${DF_ROUNDS[DF.r]} ▶</button>`}</div>`:`<div class="row" style="justify-content:center;margin-top:12px"><button class="btn pri" onclick="A.dfNext()">Carte suivante ▶</button></div>`}</div>`}
+ else{const cur=live||{r:DF.r,opp:DF.opps[DF.r],maps:[],wa:0,wb:0},i=cur.maps.length,mode=MODE_SEQ[5][i],so=teamStrength(cur.opp,mode,'bal').S;
+  const opt=t=>{const s=teamStrength('YOU',mode,t).S+(DF.useTm?DF_TM:0),d=s-so;return`<button class="dftac ${DF.tac===t?'on':''}" onclick="A.dfTac('${t}')"><b>${TACT[t]}</b><span class="${d>1.5?'good':d<-1.5?'bad':'warn'}">force ${s.toFixed(1)}</span><small>${t==='agr'?'Résultat plus aléatoire : utile si tu es outsider.':t==='cau'?'Résultat plus prévisible : utile si tu es favori.':'Sans risque particulier.'}</small></button>`};
+  const sMe=teamStrength('YOU',mode,DF.tac).S+(DF.useTm?DF_TM:0),d=sMe-so;
+  main=`<div class="card"><h3>Carte ${i+1} · ${MODE[mode]}</h3>
+   <div class="dfcmp"><div><small>Toi</small><b class="${d>=0?'good':''}">${sMe.toFixed(1)}</b></div><span class="pill ${d>1.5?'good':d<-1.5?'bad':'warn'}">${d>1.5?'Tu es favori':d<-1.5?'Tu es outsider':'Match serré'}</span><div><small>${T(cur.opp).short}</small><b class="${d<0?'bad':''}">${so.toFixed(1)}</b></div></div>
+   <div class="dftacs">${['agr','bal','cau'].map(opt).join('')}</div>
+   <label class="dftm ${DF.tm<=0?'off':''}"><input type="checkbox" ${DF.useTm?'checked':''} ${DF.tm<=0?'disabled':''} onchange="A.dfTm(this.checked)"><span><b>⏱ Temps mort</b> : +${String(DF_TM).replace('.',',')} de force sur cette carte. <span class="mut">Il t'en reste ${Math.max(0,DF.tm)} pour tout le défi${DF.tm>0?' (+80 pts par temps mort gardé si tu gagnes la finale)':''}.</span></span></label>
+   <button class="btn pri" style="width:100%;margin-top:12px;font-size:17px" onclick="A.dfPlay()">▶ Jouer la carte</button></div>`}
+ return`<div class="dfgrid m"><div><div class="hero dfhero"><div class="mut" style="letter-spacing:.2em;text-transform:uppercase;font-size:12px">${DF_ROUNDS[show.r]} · Best-of-5</div>
+  <div class="vs"><div>${bdg('YOU',1)}<div class="tn">${esc(NET.name()||'Ta sélection')}</div></div><div class="big"><span class="${wa>wb?'good':''}">${wa}</span> – <span class="${wb>wa?'bad':''}">${wb}</span></div><div>${bdg(show.opp,1)}<div class="tn">${tname(show.opp)}</div></div></div>
+  <div class="dfpips">${pips}</div></div>${main}</div>
+ <div class="dfside">${roster}<div class="card"><h3>Score provisoire</h3><div style="font:800 34px 'Oxanium','Rajdhani',sans-serif" class="acc">${nfr(an?an.s0:DF.score)}</div><div class="mut" style="font-size:13px">Carte gagnée 100 à 150 pts · tour gagné ${DF_WIN.join(' / ')} · 3–0 : +120.</div></div></div></div>`}
+function dfDoneHTML(){
+ const R=DF.run,b=DF.bd,t=dfTier(R.score),g=R.grid||dfGrid(),vs=DF.vs,board=DF.kind==='daily'?'daily':'seed';
+ return`<div class="dfgrid m"><div><div class="hero dfhero c" style="text-align:center"><div class="mut" style="letter-spacing:.2em;text-transform:uppercase;font-size:12px">${dfTitle()}</div>
+  <div class="dfbig">${nfr(R.score)}<small>pts</small></div><div class="dftier" style="--c:${t[2]}">${R.champ?'👑 ':''}${t[1]}</div>
+  <div class="dfgridr">${g.map((x,i)=>`<div><small>${DF_RS[i]}</small><span>${[...x].map(e=>`<i class="${e==='🟩'?'w':'l'}"></i>`).join('')}</span><b>${DF.rounds[i].wa}–${DF.rounds[i].wb}</b></div>`).join('')}${g.length<3?`<div class="mut" style="justify-content:center">Éliminé en ${DF_ROUNDS[g.length-1].toLowerCase()}</div>`:''}</div>
+  ${vs?`<div class="dfvs" style="margin:12px auto 0">${R.score>vs.s?`🎉 Tu bats <b>${esc(vs.n)}</b> de <b class="good">${nfr(R.score-vs.s)} pts</b> !`:R.score===vs.s?`Égalité parfaite avec <b>${esc(vs.n)}</b>.`:`<b>${esc(vs.n)}</b> garde <b class="bad">${nfr(vs.s-R.score)} pts</b> d'avance.`}</div>`:''}
+  <div id="dfrank" class="mut" style="margin-top:10px">${DF.rank?`<b class="acc">${pctTxt(DF.rank)}</b>`:R.sent?'':NET.on?'Publie ton score pour connaître ton rang mondial.':''}</div>
+  <div class="row" style="justify-content:center;margin-top:14px"><button class="btn pri" onclick="A.dfShare()">📤 Partager mon résultat</button><button class="btn" onclick="A.card('defi')">🖼 Image à partager</button>${NET.on&&!R.sent?`<button class="btn warn" onclick="A.dfPublish()">🌍 Publier mon score</button>`:''}</div>
+  ${DF.kind==='daily'?`<p class="mut" style="margin:12px 0 0">🔥 Série : <b>${DS.streak}</b> jour${DS.streak>1?'s':''} · Prochain défi dans <b id="dfcd">${nextIn()}</b></p>`:''}</div>
+  <div class="card" style="margin-top:14px"><h3>Détail du score</h3><div class="kv dfkv"><span>Cartes gagnées</span><b>+${nfr(b.maps)}</b><span>Cartes perdues de peu</span><b>+${nfr(b.close)}</b><span>Tours gagnés</span><b>+${nfr(b.rounds)}</b><span>Victoires 3–0</span><b>+${nfr(b.sweep)}</b><span>Budget non dépensé</span><b>+${nfr(b.budget)}</b><span>Temps morts gardés (si champion)</span><b>+${nfr(b.tm)}</b><span><b>Total</b></span><b class="acc">${nfr(b.total)}</b></div></div>
+  <div class="card" style="margin-top:14px"><h3>Ton équipe</h3><div class="row">${R.picks.map(i=>{const p=DF.pool[i];return`<span class="pill"><span class="chip r-${p.role}">${p.role}</span> <b>${esc(p.tag)}</b> ${ovr(p)}</span>`}).join('')}</div></div></div>
+ <div class="dfside"><div class="card"><h3>${DF.kind==='daily'?'Classement du jour':'Classement de ce défi'}</h3>${lbBox('dflb',board,DF.seed)}${NET.on?`<div class="row" style="margin-top:10px"><button class="btn sm" onclick="A.lb('daily')">Tous les classements</button></div>`:''}</div>
+  <div class="card"><h3>Et maintenant ?</h3><div class="dfnext"><button class="btn" onclick="A.defiFriend()">🤝 Créer un défi pour un ami</button>${DF.kind!=='daily'&&!(DS.runs[parisDay()]&&DS.runs[parisDay()].done)?`<button class="btn" onclick="A.defi()">⚡ Jouer le défi du jour</button>`:''}<button class="btn" onclick="A.newManager()">🧠 Carrière Manager</button><button class="btn" onclick="A.newPlayer()">🎮 Carrière Joueur</button></div>
+  <div class="kv" style="margin-top:12px"><span>Défis joués</span><b>${DS.played}</b><span>Défis remportés</span><b>${DS.wins}</b><span>Record</span><b>${nfr(DS.best)}</b></div></div></div></div>`}
+Object.assign(A,{
+ defi(){dfStart(parisDay(),'daily')},
+ defiSeed(code){code=String(code||'').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,12);if(code.length<4)return toast('Code invalide : 4 à 12 lettres ou chiffres.',1);dfStart(code,'seed')},
+ defiNew(){const c='abcdefghjkmnpqrstuvwxyz23456789';let s='';for(let i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)];A.defiSeed(s)},
+ defiFriend(){openModal(()=>`<div class="mh"><h2>🤝 Défi entre amis</h2><button class="btn x" onclick="A.close()">✕</button></div>
+  <p>Un code = un draft et des adversaires identiques pour tous ceux qui l'utilisent. Joue-le, puis envoie le lien : tes amis verront ton score à battre.</p>
+  <div class="grid g2"><div class="card"><h3>Créer</h3><p class="mut">Un nouveau défi tiré au hasard.</p><button class="btn pri" onclick="A.defiNew()">Créer un défi ▶</button></div>
+  <div class="card"><h3>Rejoindre</h3><p class="mut">Tu as reçu un code ?</p><div class="row"><input id="dfcode" class="inp" maxlength="12" placeholder="CODE" style="width:130px;text-transform:uppercase" onkeydown="if(event.key==='Enter')A.defiSeed(this.value)"><button class="btn" onclick="A.defiSeed($('#dfcode').value)">Jouer</button></div></div></div>`,'sm')},
+ dfRules(){openModal(()=>`<div class="mh"><h2>⚡ Le Défi : comment ça marche</h2><button class="btn x" onclick="A.close()">✕</button></div>
+  <ul class="how"><li><b>Même défi pour tout le monde.</b> Chaque jour, tous les joueurs reçoivent les mêmes 16 joueurs, le même budget et les mêmes 3 adversaires.</li><li><b>Draft.</b> Choisis 4 joueurs sans dépasser le budget. Notes par mode, forme, fatigue, rôles et nationalités (chimie) comptent.</li><li><b>Trois matchs en 5 manches.</b> Quart, demi, finale : avant chaque carte tu choisis ta tactique et tu peux poser un de tes 2 temps morts.</li><li><b>Pas de triche à la chance.</b> Mêmes choix = même résultat pour tous. Une seule tentative par défi.</li><li><b>Score.</b> Cartes et tours gagnés, victoires nettes, budget économisé. Partage ta grille et compare-toi au classement mondial.</li></ul>
+  <div class="row" style="justify-content:flex-end"><button class="btn pri" onclick="A.close()">Compris</button></div>`,'sm')},
+ dfPick(i){const R=DF.run;if(R.locked)return;const k=R.picks.indexOf(i);
+  if(k>=0)R.picks.splice(k,1);else{if(R.picks.length>=4)return toast('Tu as déjà 4 joueurs : retire-en un.',1);if(DF.pool[i].wage>DF.budget-dfSpent())return toast('Budget insuffisant pour ce joueur.',1);R.picks.push(i)}
+  dfStore();dfApply();render()},
+ dfLock(){const R=DF.run;if(R.picks.length!==4||dfSpent()>DF.budget)return;R.locked=true;R.ts=Date.now();dfStore();dfApply();DF.step='match';render();window.scrollTo(0,0)},
+ dfTac(t){DF.tac=t;render()},
+ dfTm(v){DF.useTm=!!v&&DF.tm>0;render()},
+ dfPlay(){if(DF.anim||DF.over||DF.last)return;const R=DF.run,prev=DF.cur,wa0=prev?prev.wa:0,wb0=prev?prev.wb:0,s0=DF.score;
+  R.ch.push({t:DF.tac,tm:DF.useTm&&DF.tm>0?1:0});DF.useTm=false;dfStore();dfApply();if(DF.over)dfFinalize();
+  const rd=DF.rounds[DF.rounds.length-1],mp=rd.maps[rd.maps.length-1];
+  DF.anim={rd,mp,wa0,wb0,s0};render();
+  let k=0;const log=mp.log,step=Math.max(1,Math.ceil(log.length/16));clearInterval(ui.timer);
+  ui.timer=setInterval(()=>{const a=$('#dfsa'),b=$('#dfsb'),lg=$('#dflog');if(!a||!DF||!DF.anim){clearInterval(ui.timer);return}
+   if(k>=log.length){clearInterval(ui.timer);DF.anim=null;DF.last={rd,mp};if(window.SFX)(mp.sa>mp.sb?SFX.good:SFX.bad)();render();return}
+   const l=log[Math.min(log.length-1,k)];a.textContent=l.sa;b.textContent=l.sb;lg.innerHTML=`<div>${l.text}</div>`+lg.innerHTML;if(window.SFX)SFX.tick();k+=step;if(k>=log.length&&k-step<log.length-1)k=log.length-1},90)},
+ dfNext(){DF.last=null;DF.tac='bal';render();window.scrollTo(0,0)},
+ dfDone(){DF.last=null;DF.step='done';render();window.scrollTo(0,0);if(window.SFX)(DF.champ?SFX.win:SFX.coin)()},
+ dfPublish(){if(!NET.name())return A.askName(()=>A.dfPublish());dfSend().then(()=>{if(DF&&DF.run.sent){toast('🌍 Score publié !');render()}else toast('Publication impossible pour le moment.',1)})},
+ async dfShare(){const txt=dfShareText();
+  try{if(navigator.share&&/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){await navigator.share({text:txt});return}}catch(e){if(e&&e.name==='AbortError')return}
+  A.copy(txt,'Résultat copié : colle-le où tu veux !')},
+ copy(txt,okMsg){const done=()=>toast(okMsg||'Copié !');
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(txt).then(done,()=>A.copyFallback(txt,done));else A.copyFallback(txt,done)},
+ copyFallback(txt,done){openModal(()=>`<div class="mh"><h2>Copie ce texte</h2><button class="btn x" onclick="A.close()">✕</button></div><textarea class="inp" style="width:100%;height:190px;font:15px/1.4 system-ui" onfocus="this.select()">${esc(txt)}</textarea>`,'sm')}
+});
+
+/* ---------- carte d'accueil ---------- */
+function dfHomeCard(){
+ const day=parisDay(),run=DS.runs[day],st=run&&run.done?'done':run&&(run.locked||run.picks.length)?'go':'new',alive=DS.last===day||DS.last===parisDay(Date.now()-864e5)?DS.streak:0;
+ return`<div class="dfhome" onclick="A.defi()"><div class="dfh-g"></div><div class="dfh-l"><div><span class="new">CHAQUE JOUR</span> <span class="mut" style="letter-spacing:.14em;font-size:12px">MÊME DÉFI POUR TOUS LES JOUEURS</span></div>
+  <h2>⚡ DÉFI DU JOUR <b>#${dayNo(day)}</b></h2><p>Drafte 4 joueurs avec un budget serré, enchaîne quart, demi et finale, puis compare ton score au monde entier. 3 minutes, une seule tentative.</p></div>
+  <div class="dfh-r"><div class="dfh-s"><span>🔥 Série <b>${alive}</b></span><span>⏳ <b id="dfcd">${nextIn()}</b></span><span id="dfcount" class="mut"></span></div>
+  <div class="row"><button class="btn pri">${st==='done'?`Mon résultat · ${nfr(run.score)} pts`:st==='go'?'Reprendre le défi ▶':'Jouer le défi ▶'}</button><button class="btn" onclick="event.stopPropagation();A.lb('daily')">🌍 Classements</button><button class="btn" onclick="event.stopPropagation();A.defiFriend()">🤝 Défier un ami</button></div></div></div>`}
+function dfHomeAfter(){if(!NET.on)return;NET.top('daily',parisDay(),0).then(d=>{const e=$('#dfcount');if(e&&d&&d.total)e.innerHTML=`👥 <b>${nfr(d.total)}</b> joueur${d.total>1?'s':''} aujourd'hui`})}
+setInterval(()=>{const e=document.getElementById('dfcd');if(e)e.textContent=nextIn()},1000);
+
+/* ---------- scores de carrière ---------- */
+function mgrScore(){let s=G.pts[G.me]||0;Object.values(G.evs||{}).forEach(E=>{const p=E.place&&E.place[G.me];if(!p)return;if(E.kind==='champs')s+=({1:80,2:45,3:25,5:10,7:5})[p]||0;else if(E.kind==='major'&&p===1)s+=15;else if(E.kind==='minor'&&p===1)s+=6});return Math.round(s)}
+const mgrDone=()=>G&&G.mode==='manager'&&G.phase==='offseason'&&G.evs&&G.evs.champs&&G.evs.champs.done;
+Object.assign(A,{
+ pubManager(){if(!mgrDone())return toast('Termine la saison pour publier ton score.',1);A.publish('manager','all',mgrScore(),`${T(G.me).name} · S${G.season}`)},
+ pubLegend(){if(!G||G.mode!=='player')return;const lg=legacy();A.publish('legend','all',lg,`${legacyTitle(lg)} · ${G.car.seasons.length} saison${G.car.seasons.length>1?'s':''}`)}
+});
+const worldBtns=kind=>`<div class="row wbtns">${kind==='manager'?`<button class="btn" onclick="A.card('season')">🖼 Image à partager</button><button class="btn warn" onclick="A.pubManager()">🌍 Publier ma saison (${mgrScore()} pts)</button>`:`<button class="btn" onclick="A.card('player')">🖼 Ma carte de joueur</button><button class="btn warn" onclick="A.pubLegend()">🌍 Publier ma légende (${legacy()})</button>`}<button class="btn" onclick="A.lb('${kind==='manager'?'manager':'legend'}')">Classement mondial</button></div>`;
+
+/* ---------- images à partager (canvas) ---------- */
+const svgImg=svg=>new Promise((ok,ko)=>{if(!/xmlns=/.test(svg))svg=svg.replace('<svg','<svg xmlns="http://www.w3.org/2000/svg"');const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)});
+const logoSVG=(tid,size)=>{const t=G&&G.teams[tid];if(!t)return null;if(LOGO[tid])return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="${size}" height="${size}"><path d="${LG_SHIELD}" fill="${t.color}"/><path d="${LG_SHIELD}" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.6"/>${LOGO[tid]}</svg>`;
+ return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="${size}" height="${size}"><path d="${LG_SHIELD}" fill="${t.color}"/><path d="${LG_SHIELD}" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.6"/><text x="32" y="38" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" font-size="15" fill="#fff">${esc(String(t.short).slice(0,3))}</text></svg>`};
+async function cardCanvas(kind){
+ const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d'),F="'Oxanium','Rajdhani','Segoe UI',system-ui,sans-serif";
+ const acc=kind==='defi'?'#b8ff2c':(G&&G.me&&T(G.me)?T(G.me).color:'#b8ff2c');
+ const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#1b2536');g.addColorStop(1,'#0c111a');x.fillStyle=g;x.fillRect(0,0,W,H);
+ const rg=x.createRadialGradient(W*.8,H*.12,0,W*.8,H*.12,760);rg.addColorStop(0,acc+'55');rg.addColorStop(1,acc+'00');x.fillStyle=rg;x.fillRect(0,0,W,H);
+ x.strokeStyle='rgba(255,255,255,.035)';x.lineWidth=2;for(let i=-H;i<W;i+=44){x.beginPath();x.moveTo(i,0);x.lineTo(i+H,H);x.stroke()}
+ const rr=(a,b,w,h,r)=>{x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()};
+ const tx=(s,a,b,f,c,al,mw)=>{x.font=f;x.fillStyle=c;x.textAlign=al||'left';x.textBaseline='alphabetic';if(mw){let fs=parseInt(f.match(/(\d+)px/)[1],10);while(x.measureText(s).width>mw&&fs>18){fs-=2;x.font=f.replace(/\d+px/,fs+'px')}}x.fillText(s,a,b)};
+ x.strokeStyle=acc;x.lineWidth=6;rr(30,30,W-60,H-60,26);x.stroke();
+ tx(ED.logoText,70,118,`800 44px ${F}`,'#fff');const lw=x.measureText(ED.logoText).width;x.fillStyle=acc;x.fillRect(70,134,lw,6);
+ const url=siteURL().replace(/^https?:\/\//,'').replace(/\/$/,'');
+ if(kind==='defi'){
+  const R=DF.run,t=dfTier(R.score),gr=R.grid||dfGrid();
+  tx(DF.kind==='daily'?`DÉFI DU JOUR #${DF.no}`:`DÉFI ${DF.seed.toUpperCase()}`,W-70,112,`800 40px ${F}`,acc,'right');tx(DF.kind==='daily'?dayFr(DF.seed):'entre amis',W-70,150,`600 28px ${F}`,'#aab8cb','right');
+  tx(nfr(R.score),W/2,430,`800 230px ${F}`,'#fff','center',900);tx('POINTS',W/2,490,`700 40px ${F}`,'#aab8cb','center');
+  x.fillStyle=t[2];rr(W/2-190,520,380,76,38);x.fill();tx((R.champ?'👑 ':'')+t[1],W/2,573,`800 44px ${F}`,'#10151d','center');
+  for(let i=0;i<3;i++){const y=680+i*130,row=gr[i];tx(DF_RS[i],260,y+62,`800 38px ${F}`,row?'#fff':'#55657e','right');
+   for(let k=0;k<5;k++){const c=row?[...row][k]:null;x.fillStyle=c==='🟩'?'#34d399':c==='🟥'?'#f43f5e':'rgba(255,255,255,.07)';rr(300+k*112,y,96,96,18);x.fill()}
+   if(row)tx(`${DF.rounds[i].wa}–${DF.rounds[i].wb}`,W-110,y+64,`800 46px ${F}`,'#fff','right')}
+  tx(R.champ?'👑 CHAMPION DU DÉFI':gr.length===3?'FINALISTE':gr.length===2?'DEMI-FINALISTE':'ÉLIMINÉ EN QUART',W/2,1120,`800 38px ${F}`,'#fff','center',W-160);
+  tx([NET.name()?`par ${NET.name()}`:'',DF.kind==='daily'&&DS.streak>1?`🔥 série ${DS.streak} jours`:''].filter(Boolean).join('  ·  '),W/2,1172,`600 30px ${F}`,'#aab8cb','center',W-160);
+  tx('Même défi pour tout le monde. Fais mieux ?',W/2,1238,`700 36px ${F}`,acc,'center',W-160)}
+ else if(kind==='player'){
+  const p=P(G.pid),c=G.car,lg=legacy();const av=await svgImg(avatarSVG(p.look,p.role,460));if(av)x.drawImage(av,70,190,460,460);
+  const lo=await svgImg(logoSVG(G.me,150));if(lo)x.drawImage(lo,W-230,170,150,150);
+  tx(String(ovr(p)),W-90,520,`800 210px ${F}`,'#fff','right');tx('OVR · '+p.role,W-90,572,`700 38px ${F}`,acc,'right');
+  tx(p.tag,70,760,`800 96px ${F}`,'#fff','left',W-140);tx(`${tname(G.me)} · ${p.age} ans · saison ${G.season}`,70,812,`600 34px ${F}`,'#aab8cb','left',W-140);
+  ATTRS.forEach((a,i)=>{const cx=70+(i%2)*490,cy=880+Math.floor(i/2)*84,v=Math.round(p.attrs[a]);tx(ATTR_L[a].toUpperCase(),cx,cy,`700 26px ${F}`,'#aab8cb');tx(String(v),cx+450,cy,`800 34px ${F}`,'#fff','right');x.fillStyle='rgba(255,255,255,.1)';rr(cx,cy+14,450,14,7);x.fill();x.fillStyle=v>=80?'#ffd24a':v>=65?'#34d399':'#fb923c';rr(cx,cy+14,450*v/100,14,7);x.fill()});
+  x.fillStyle='rgba(255,255,255,.06)';rr(70,1130,W-140,110,20);x.fill();
+  tx(`LÉGENDE ${lg}`,100,1200,`800 46px ${F}`,acc);tx(legacyTitle(lg),W-100,1178,`800 34px ${F}`,'#fff','right');tx(`🏆 ${c.awards.champs}   🏅 ${c.awards.majors}   ⭐ ${c.awards.mvp}`,W-100,1222,`700 30px ${F}`,'#cdd7e4','right')}
+ else{
+  const t=T(G.me),h=G.hist[G.hist.length-1],E=G.evs&&G.evs.champs,pl=E&&E.place[G.me],sc=mgrScore();
+  const lo=await svgImg(logoSVG(G.me,360));if(lo)x.drawImage(lo,W/2-180,190,360,360);
+  tx(tname(G.me),W/2,640,`800 84px ${F}`,'#fff','center',W-160);tx(`SAISON ${h?h.season:G.season}${G.mgr&&G.mgr!=='Manager'?' · COACH '+String(G.mgr).toUpperCase():''}`,W/2,694,`700 32px ${F}`,'#aab8cb','center',W-160);
+  x.fillStyle=pl===1?'#ffd24a':'rgba(255,255,255,.08)';rr(140,740,W-280,110,55);x.fill();tx(pl===1?'🏆 CHAMPION':pl===2?'FINALISTE DU CHAMPIONNAT':pl===3?'DEMI-FINALISTE':pl?'QUALIFIÉ AU CHAMPIONNAT':'NON QUALIFIÉ AU CHAMPIONNAT',W/2,812,`800 44px ${F}`,pl===1?'#10151d':'#fff','center',W-340);
+  const mj=Object.values(G.evs||{}).filter(e=>e.kind==='major'&&e.place[G.me]===1).length,mn=Object.values(G.evs||{}).filter(e=>e.kind==='minor'&&e.place[G.me]===1).length,rec=G.rec[G.me]||{w:0,l:0};
+  [['BILAN',`${rec.w}V – ${rec.l}D`],['POINTS DE LIGUE',String(G.pts[G.me]||0)],['MAJORS GAGNÉS',String(mj)],['MINORS GAGNÉS',String(mn)]].forEach(([l,v],i)=>{const cx=70+(i%2)*490,cy=900+Math.floor(i/2)*150;x.fillStyle='rgba(255,255,255,.06)';rr(cx,cy,450,124,18);x.fill();tx(l,cx+26,cy+44,`700 24px ${F}`,'#aab8cb');tx(v,cx+26,cy+102,`800 56px ${F}`,'#fff')});
+  tx(`SCORE DE SAISON ${sc}`,W/2,1238,`800 44px ${F}`,acc,'center',W-160)}
+ if(url)tx(url,W/2,H-62,`600 28px ${F}`,'#8fa0b8','center',W-160);
+ return cv}
+Object.assign(A,{
+ async card(kind){let cv;try{cv=await cardCanvas(kind)}catch(e){return toast('Image impossible à générer sur cet appareil.',1)}
+  ui.card={cv,kind,txt:kind==='defi'?dfShareText():kind==='player'?`${P(G.pid).tag} — OVR ${ovr(P(G.pid))}, légende ${legacy()} sur ${ED.title}${siteURL()?' → '+siteURL():''}`:`${tname(G.me)} — saison ${G.season} : ${mgrScore()} pts sur ${ED.title}${siteURL()?' → '+siteURL():''}`};
+  let can=false;try{can=!!(navigator.canShare&&navigator.canShare({files:[new File([''],'a.png',{type:'image/png'})]}))}catch(e){}
+  const src=cv.toDataURL('image/png');
+  openModal(()=>`<div class="mh"><h2>🖼 Image à partager</h2><button class="btn x" onclick="A.close()">✕</button></div><img class="cardimg" src="${src}" alt="Carte à partager">
+  <div class="row" style="margin-top:12px;justify-content:center">${can?'<button class="btn pri" onclick="A.cardShare()">📤 Partager</button>':''}<button class="btn ${can?'':'pri'}" onclick="A.cardSave()">⬇ Télécharger l\'image</button><button class="btn" onclick="A.copy(ui.card.txt,'Texte copié !')">📋 Copier le texte</button></div>`,'sm')},
+ cardBlob:()=>new Promise(ok=>ui.card.cv.toBlob(ok,'image/png')),
+ async cardSave(){const b=await A.cardBlob(),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`scrim-${ui.card.kind}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},
+ async cardShare(){try{const b=await A.cardBlob();await navigator.share({files:[new File([b],`scrim-${ui.card.kind}.png`,{type:'image/png'})],text:ui.card.txt})}catch(e){if(!e||e.name!=='AbortError')A.cardSave()}}
+});
+
+/* ---------- lien reçu : ?d=jour | ?d=CODE&s=score&n=pseudo ---------- */
+function dfFromURL(){try{const q=new URLSearchParams(location.search),d=(q.get('d')||'').toLowerCase();if(!d)return false;
+  const clean=()=>{try{history.replaceState(null,'',location.pathname)}catch(e){}};
+  if(d==='jour'){clean();A.defi();return true}
+  const code=d.replace(/[^a-z0-9]/g,'').slice(0,12);if(code.length<4)return false;
+  const s=parseInt(q.get('s')||'',10),n=(q.get('n')||'').replace(/[<>&"]/g,'').slice(0,16);
+  if(s>0&&s<=6000&&!(DS.runs[code]&&DS.runs[code].done))DF_VS={seed:code,s,n:n||'Un ami'};
+  clean();A.defiSeed(code);return true}catch(e){return false}}
+
 /* ---------- init ---------- */
 genLeague();
 ui.screen='home';
 initMonet();
 document.body.insertAdjacentHTML('afterbegin',LOGO_DEFS);
-document.addEventListener('click',e=>{if(window.SFX&&e.target.closest&&e.target.closest('button,.opt,.plan,.mcard,.tcard,tr.clk,.stp.done'))SFX.click()});
-render();
+document.addEventListener('click',e=>{if(window.SFX&&e.target.closest&&e.target.closest('button,.opt,.plan,.mcard,.tcard,tr.clk,.stp.done,.dfp,.dfhome'))SFX.click()});
+if(!dfFromURL())render();
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
