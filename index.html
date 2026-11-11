@@ -2512,7 +2512,7 @@ const NET={
  top:(board,key,n)=>NET.call(`/api/top?board=${board}&key=${encodeURIComponent(key)}&n=${n==null?50:n}${NET.uid()?'&uid='+NET.uid():''}`),
  post:(board,key,score,meta)=>NET.call('/api/score',{board,key,uid:NET.uid(true),name:NET.name(),score,meta:meta||''})
 };
-const pctTxt=d=>{if(!d||!d.me)return'';const r=`${d.me.rank}ᵉ sur ${nfr(d.total)}`;if(d.total<5)return r;const p=Math.max(1,Math.ceil(d.me.rank/d.total*100));return p<=50?`Top ${p} % · ${r}`:r};
+const pctTxt=d=>{if(!d||!d.me)return'';const r=`${d.me.rank===1?'1ᵉʳ':d.me.rank+'ᵉ'} sur ${nfr(d.total)}`;if(d.total<5)return r;const p=Math.max(1,Math.ceil(d.me.rank/d.total*100));return p<=50?`Top ${p} % · ${r}`:r};
 const lbMeta=m=>!m?'':/^[VD ]+( 🏆)?$/.test(m)?` <span class="lbp">${[...m].map(c=>c==='V'?'<i class="w"></i>':c==='D'?'<i class="l"></i>':c===' '?'<i class="s"></i>':'').join('')}${m.endsWith('🏆')?' 👑':''}</span>`:` <span class="mut lbm">${esc(m)}</span>`;
 const dayStats=d=>d&&d.total>=3?`<p class="mut" style="margin:6px 0 0">Moyenne du jour : <b>${nfr(d.avg)} pts</b> · ${d.champs?`${Math.round(d.champs/d.total*100)} % des joueurs ont gagné la finale`:"personne n'a encore gagné la finale"}.</p>`:'';
 function lbTable(d,unit){
