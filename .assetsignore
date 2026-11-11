@@ -1,0 +1,8 @@
+src
+wrangler.jsonc
+README.md
+.assetsignore
+.git
+.nojekyll
+node_modules
+.wrangler

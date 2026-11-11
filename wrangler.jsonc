@@ -1,0 +1,9 @@
+{
+  // Scrim Simulator : site statique + API de classements (Durable Object SQLite, offre gratuite)
+  "name": "scrim-simulator",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-10-01",
+  "assets": { "directory": "./", "binding": "ASSETS" },
+  "durable_objects": { "bindings": [{ "name": "BOARD", "class_name": "Board" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Board"] }]
+}
