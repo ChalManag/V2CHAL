@@ -3,7 +3,5 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   X-Frame-Options: SAMEORIGIN
-  # CSP de départ SANS publicité. Quand vous activez AdSense/une CMP, ajoutez leurs domaines
-  # (pagead2.googlesyndication.com, fundingchoicesmessages.google.com, *.doubleclick.net, *.google.com…)
-  # dans script-src, frame-src, img-src et connect-src.
+  # La politique est élargie automatiquement quand la publicité passe en 'live' (les annonces Google chargent de nombreux domaines).
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'

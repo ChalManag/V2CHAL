@@ -23,6 +23,33 @@ const cleanName = (n) => {
   return n;
 };
 
+// Vérification d'une clé Premium auprès du vendeur officiel (aucune clé secrète nécessaire).
+async function checkLicense(env, key) {
+  const prov = env.LICENSE_PROVIDER || '', now = Date.now(), cap = now + 30 * 86400000;
+  const done = (ok, exp) => (ok ? { ok: true, exp: Math.min(exp || cap, cap) } : { ok: false });
+  try {
+    if (prov === 'lemonsqueezy') {
+      const r = await fetch((env.LICENSE_API || 'https://api.lemonsqueezy.com') + '/v1/licenses/validate', { method: 'POST', headers: { accept: 'application/json', 'content-type': 'application/x-www-form-urlencoded' }, body: 'license_key=' + encodeURIComponent(key) });
+      const j = await r.json(), m = (j && j.meta) || {}, ex = j && j.license_key && j.license_key.expires_at;
+      const ok = !!j && j.valid === true && (!env.LICENSE_STORE || String(m.store_id) === String(env.LICENSE_STORE)) && (!env.LICENSE_PRODUCT || String(m.product_id) === String(env.LICENSE_PRODUCT));
+      return done(ok && (!ex || Date.parse(ex) > now), ex ? Date.parse(ex) : 0);
+    }
+    if (prov === 'polar') {
+      const r = await fetch((env.LICENSE_API || 'https://api.polar.sh') + '/v1/customer-portal/license-keys/validate', { method: 'POST', headers: { accept: 'application/json', 'content-type': 'application/json' }, body: JSON.stringify({ key, organization_id: env.LICENSE_STORE }) });
+      if (r.status === 404) return { ok: false };
+      const j = await r.json(), ex = j && j.expires_at;
+      const ok = !!j && j.status === 'granted' && (!env.LICENSE_PRODUCT || String(j.benefit_id) === String(env.LICENSE_PRODUCT));
+      return done(ok && (!ex || Date.parse(ex) > now), ex ? Date.parse(ex) : 0);
+    }
+    if (prov === 'gumroad') {
+      const r = await fetch((env.LICENSE_API || 'https://api.gumroad.com') + '/v2/licenses/verify', { method: 'POST', headers: { accept: 'application/json', 'content-type': 'application/x-www-form-urlencoded' }, body: 'product_id=' + encodeURIComponent(env.LICENSE_PRODUCT) + '&license_key=' + encodeURIComponent(key) + '&increment_uses_count=false' });
+      const j = await r.json(), pu = (j && j.purchase) || {};
+      return done(!!j && j.success === true && !pu.refunded && !pu.chargebacked && !pu.disputed && !pu.subscription_ended_at && !pu.subscription_cancelled_at && !pu.subscription_failed_at, 0);
+    }
+  } catch (e) { return { ok: false, error: 'upstream' }; }
+  return { ok: false, error: 'off' };
+}
+
 export class Board extends DurableObject {
   constructor(ctx, env) {
     super(ctx, env);
@@ -77,6 +104,14 @@ export class Board extends DurableObject {
           }
         }
         return json({ top: rows.map(r => ({ name: r.name, score: r.score, meta: r.d + ' j', me: !!uid && r.uid === uid })), total, me });
+      }
+      if (req.method === 'POST' && path === '/api/license') {
+        if (this.limited('l' + ip, 12, 600000)) return json({ error: 'rate' }, 429);
+        const txt = await req.text();
+        let b; try { b = JSON.parse(txt.slice(0, 400)); } catch (e) { return json({ error: 'bad' }, 400); }
+        const key = String((b && b.key) || '').trim();
+        if (!/^[A-Za-z0-9_\-]{8,90}$/.test(key)) return json({ ok: false });
+        return json(await checkLicense(this.env, key));
       }
       if (req.method === 'POST' && (path === '/api/score' || path === '/api/forget')) {
         if (this.limited('p' + ip, 40, 600000)) return json({ error: 'rate' }, 429);

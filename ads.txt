@@ -1,2 +1,1 @@
-# Remplacer par la ligne fournie par AdSense, par exemple :
-# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+# Aucun vendeur publicitaire autorisé pour le moment.
