@@ -367,6 +367,27 @@ input[type=checkbox]{width:18px;height:18px;flex:0 0 auto;accent-color:var(--acc
 .wbtns{margin-top:12px}
 @media(max-width:1000px){.dfgrid,.dfgrid.m{grid-template-columns:minmax(0,1fr)}.dfside{position:static}}
 @media(max-width:620px){.dfpool{grid-template-columns:minmax(0,1fr)}.dftacs{grid-template-columns:minmax(0,1fr)}.dftac{min-height:0}.dfsc{font-size:48px}.dfh-l h2{font-size:24px}.dfgridr i{width:30px;height:30px}.dfhome{padding:14px}.dfpip small{font-size:9px;letter-spacing:0}.dfpip b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dfpip span{font-size:12px}.dfpips{gap:5px}}
+/* ---- v7 : match en direct, veto, vestiaire ---- */
+.md.lm{max-width:1040px}
+.lmtrack{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.lmt{padding:3px 10px;font-size:13px}.lmt small{color:var(--mut);margin-left:3px}.lmt.on{border-color:var(--acc);color:var(--txt);box-shadow:0 0 0 1px var(--acc)}.lmt.good{border-color:var(--good)}.lmt.bad{border-color:var(--bad)}
+.lmgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start}.lmgrid>div{display:grid;gap:14px}
+.lmh{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:14px 0 8px}
+.lmplay{padding:6px 0}.lmnotes{max-width:640px;margin:0 auto 8px;padding:8px 12px;border:1px solid var(--line);border-left:4px solid var(--acc2);border-radius:8px;font-size:14px;background:rgba(255,255,255,.04)}
+.lmw{border-color:var(--good)}.lml{border-color:var(--bad)}
+.lmprompt{text-align:center;padding:10px 12px;border-radius:8px;border:1px solid var(--line);margin:10px 0;font-size:17px}.lmprompt.me{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 9%,transparent)}
+.vrow{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px;align-items:stretch;margin:8px 0}
+.vmode{display:flex;flex-direction:column;justify-content:center;padding:6px 10px;border-radius:8px;background:var(--panel2)}.vmode b{font:800 15px 'Oxanium','Rajdhani',sans-serif;overflow-wrap:anywhere}.vmode small{color:var(--mut);font-size:12px}
+.vmaps{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.vmap{display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left;padding:9px 11px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);min-width:0;min-height:96px;cursor:default;font-weight:600}
+.vmap>b{font-size:15.5px;overflow-wrap:anywhere}.vmap span{font-size:12.5px;color:var(--mut)}.vmap i{font-style:normal;font-size:12px;margin-top:2px}
+.vmap.can{cursor:pointer;border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}.vmap.can:hover{background:color-mix(in srgb,var(--acc) 12%,var(--panel2))}
+.vmap.ban{opacity:.45}.vmap.ban>b{text-decoration:line-through}.vmap.pk{border-color:var(--good);background:rgba(52,211,153,.1)}
+.vmap:disabled:not(.ban):not(.pk){opacity:.8}
+.pers{cursor:help;font-size:.95em}
+.lev{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}.lev:last-child{border-bottom:0}.lev>div{min-width:0;flex:1}.lev .mut{font-size:13px;line-height:1.35}
+@media(max-width:820px){.lmgrid{grid-template-columns:minmax(0,1fr)}.vrow{grid-template-columns:minmax(0,1fr)}}
+.btn.evb{align-items:flex-start;text-align:left;justify-content:flex-start}
 </style>
 </head>
 <body>
@@ -664,7 +685,7 @@ function teamStrength(tid,mode,tactic){
  const mean=avg(ps.map(p=>effMode(p,mode)));
  const st=styleScore(ps);let tb,v;
  if(tactic==='agr'){tb=clamp(st*.12,-2,2);v=1.3}else if(tactic==='cau'){tb=clamp(-st*.12,-2,2);v=.75}else{tb=.4;v=1}
- return{S:mean+(t.chem-50)/50*3.5+t.staff.analyst*.35+roleBalance(ps)+tb,v}}
+ return{S:mean+(t.chem-50)/50*3.5+t.staff.analyst*.35+roleBalance(ps)+tb+(G.mode==='defi'?0:teamDyn(tid,ps).v),v}}
 const mapProb=(A,B)=>1/(1+1/Math.exp((A.S-B.S)/(10*(A.v+B.v)/2)));
 
 /* ---------- simulation d'un match ---------- */
@@ -711,11 +732,11 @@ function simMap(mode,a,b,pA,mapName){
  return{mode,map:mapName,sa,sb,stats,log}}
 function simMatch(m,tacA,tacB,opts){
  const bo=m.bo||5,need=(bo+1)>>1,seq=MODE_SEQ[bo]||MODE_SEQ[5];
- let wa=0,wb=0;const maps=[],names=shuffle(MAP_NAMES.concat(MAP_NAMES));
+ let wa=0,wb=0;const maps=[],plan=(opts&&opts.plan)||vetoAuto(m,bo);
  for(let i=0;i<bo;i++){if(wa===need||wb===need)break;const mode=seq[i];
-  const SA=teamStrength(m.a,mode,tacA[mode]),SB=teamStrength(m.b,mode,tacB[mode]);let p=mapProb(SA,SB);
+  const SA=teamStrength(m.a,mode,tacA[mode]),SB=teamStrength(m.b,mode,tacB[mode]),map=plan[i].map;SA.S+=mapAff(m.a,mode,map);SB.S+=mapAff(m.b,mode,map);if(i===bo-1){SA.S+=calmAdj(m.a);SB.S+=calmAdj(m.b)}let p=mapProb(SA,SB);
   if(i===bo-1&&opts&&opts.decider){p=clamp(p+opts.decider*(opts.side==='a'?1:-1),.04,.96)}
-  const mp=simMap(mode,m.a,m.b,p,names[i]);maps.push(mp);mp.sa>mp.sb?wa++:wb++}
+  const mp=simMap(mode,m.a,m.b,p,map);mp.by=plan[i].by;maps.push(mp);mp.sa>mp.sb?wa++:wb++}
  const win=wa>wb?m.a:m.b,agg={};
  maps.forEach(mp=>{for(const id in mp.stats){(agg[id]=agg[id]||[]).push(mp.stats[id].r)}});
  let mvp=null,best=-1;
@@ -757,7 +778,7 @@ function finishDay(quiet){
  dailyTick(day);afterDay(day);pruneLogs();
  G.day++;
  if(G.day>=G.cal.length)seasonEnd();
- save();if(!quiet){refreshUI();if(G.mode==='player')openEvent()}
+ save();if(!quiet){refreshUI();if(G.mode==='player')openEvent();else openTeamEvent()}
 }
 function pruneLogs(){
  const withLog=Object.values(G.results).filter(r=>r.maps.some(m=>m.log)).sort((x,y)=>y.day-x.day);
@@ -858,7 +879,7 @@ function dailyTick(day){
  // finances du joueur
  const t=me(),inc=Math.round(10+t.rep*.22),stf=Object.values(t.staff).reduce((s,l)=>s+l*30,0)/DAYS,wg=Math.round(payroll(G.me)/DAYS+stf);
  t.balance+=inc-wg;G.fin.income+=inc;G.fin.wages+=wg;G.balHist.push({d:G.day+1,b:Math.round(t.balance)});
- userEvents();
+ userEvents();tlTick(day);
 }
 function userEvents(){
  const t=me(),r=roster(G.me);
@@ -986,7 +1007,7 @@ function fastBtns(){
  if(um&&!G.results[um.id])h+=`<button class="btn" onclick="A.quickMatch()" title="Simule uniquement ton match, résultat immédiat">⏭ Simuler le match</button>`;
  h+=`<button class="btn" onclick="A.autoRun()" title="Simule tous tes matchs jusqu'à la fin de cette phase">${lg?'⏩ Jusqu\'au prochain tournoi':'⏩ Jusqu\'à la fin du tournoi'}</button>`;
  return h}
-const NAV=[['dash','◈','Tableau de bord'],['squad','☰','Effectif'],['tactics','✦','Tactiques'],['train','↗','Entraînement & Staff'],['market','⇄','Marché'],['cal','▦','Calendrier'],['event','🏆','Tournois'],['table','♛','Classements'],['league','◍','Ligue'],['stats','◉','Statistiques'],['inbox','✉','Messages'],['fin','$','Finances'],['sys','⚙','Système']];
+const NAV=[['dash','◈','Tableau de bord'],['squad','☰','Effectif'],['locker','🚪','Vestiaire'],['tactics','✦','Tactiques'],['train','↗','Entraînement & Staff'],['market','⇄','Marché'],['cal','▦','Calendrier'],['event','🏆','Tournois'],['table','♛','Classements'],['league','◍','Ligue'],['stats','◉','Statistiques'],['inbox','✉','Messages'],['fin','$','Finances'],['sys','⚙','Système']];
 function render(){
  const app=$('#app');
  if(ui.screen==='home'){renderHome();return}
@@ -999,14 +1020,14 @@ function render(){
  document.documentElement.style.setProperty('--team',me().color);
  const unread=G.inbox.filter(m=>!m.read).length,y=window.scrollY;
  const vw=VIEWS[G.view]||VIEWS[player?'pdash':'dash'];
- app.innerHTML=`<aside><div class="logo" style="cursor:pointer" onclick="A.home()" title="Retour à l'accueil">${ED.logoHTML}<small>${player?'CARRIÈRE JOUEUR · ':''}SAISON ${G.season}</small></div><nav><button onclick="A.home()"><span class="ic">🏠</span>Accueil</button><div class="sep"></div>${nav.map(([k,i,l])=>k==='sep'?'<div class="sep"></div>':`<button class="${G.view===k?'on':''}" onclick="A.view('${k}')"><span class="ic">${i}</span>${l}${k==='inbox'&&unread?`<span class="badge">${unread}</span>`:''}</button>${!player&&(k==='train'||k==='league'||k==='fin')?'<div class="sep"></div>':''}`).join('')}</nav></aside><main>${player?ptopbar():topbar()}<div id="view">${vw()}</div>${G.view==='dash'?rewardCard('cash','Regarde une courte pub pour obtenir +60k$ de budget.'):G.view==='pagenda'?rewardCard('coach','Regarde une courte pub : séance de coaching offerte (+1,2 sur ton attribut principal).'):''}${adSlot('main')}</main>`;
+ app.innerHTML=`<aside><div class="logo" style="cursor:pointer" onclick="A.home()" title="Retour à l'accueil">${ED.logoHTML}<small>${player?'CARRIÈRE JOUEUR · ':''}SAISON ${G.season}</small></div><nav><button onclick="A.home()"><span class="ic">🏠</span>Accueil</button><div class="sep"></div>${nav.map(([k,i,l])=>k==='sep'?'<div class="sep"></div>':`<button class="${G.view===k?'on':''}" onclick="A.view('${k}')"><span class="ic">${i}</span>${l}${k==='inbox'&&unread?`<span class="badge">${unread}</span>`:k==='locker'&&G.tl&&G.tl.pending?'<span class="badge">!</span>':''}</button>${!player&&(k==='train'||k==='league'||k==='fin')?'<div class="sep"></div>':''}`).join('')}</nav></aside><main>${player?ptopbar():topbar()}<div id="view">${vw()}</div>${G.view==='dash'?rewardCard('cash','Regarde une courte pub pour obtenir +60k$ de budget.'):G.view==='pagenda'?rewardCard('coach','Regarde une courte pub : séance de coaching offerte (+1,2 sur ton attribut principal).'):''}${adSlot('main')}</main>`;
  window.scrollTo(0,y);
 }
 function topbar(){
  const t=me(),off=G.phase==='offseason',day=!off&&G.cal[G.day];
  if(day)prepareDay(day);
  const um=day&&userMatch(day);
- const lbl=off?`▶ Lancer la saison ${G.season+1}`:um?`▶ Jouer : vs ${T(um.a===G.me?um.b:um.a).short}`:'▶ Journée suivante';
+ const lbl=G.tl&&G.tl.pending?'⚠ Décision en attente':off?`▶ Lancer la saison ${G.season+1}`:um?`▶ Jouer : vs ${T(um.a===G.me?um.b:um.a).short}`:'▶ Journée suivante';
  return`<div class="top"><div class="who">${bdg(G.me,1)}<div class="stat"><small>${esc(G.mgr)}</small><b>${tname(G.me)}</b></div></div>
  <div class="stat"><small>Calendrier</small><b>${dayLabel()}</b></div>
  <div class="stat"><small>Budget</small><b class="${t.balance<0?'bad':''}">${fmtK(t.balance)}</b></div>
@@ -1048,7 +1069,7 @@ VIEWS.squad=()=>{
  const r=roster(G.me).sort((a,b)=>ovr(b)-ovr(a)),lu=new Set(me().lineup);
  return`<div class="h1">Effectif <small>${r.length}/${MAXROSTER} joueurs · ${fmtK(payroll(G.me))} / ${fmtK(CAP)}</small></div>
  <div class="card"><div class="tw"><table><tr><th>Joueur</th><th>Rôle</th><th>Âge</th><th>OVR</th><th>Pot.</th><th>HP</th><th>S&D</th><th>OVL</th><th>Forme</th><th>Moral</th><th>Fatigue</th><th>K/D</th><th>Rating</th><th>Salaire</th><th>Contrat</th></tr>
- ${r.map(p=>`<tr class="clk" onclick="A.player('${p.id}')"><td>${lu.has(p.id)?'<span class="starter">●</span>':''}<b>${p.tag}</b> <span>${FLAG[p.nat]}</span>${p.listed?' <span class="pill warn">à vendre</span>':''}</td><td>${roleC(p.role)}</td><td>${p.age}</td><td>${ovrB(ovr(p))}</td><td class="mut">${potRange(p)}</td>
+ ${r.map(p=>`<tr class="clk" onclick="A.player('${p.id}')"><td>${lu.has(p.id)?'<span class="starter">●</span>':''}<b>${p.tag}</b> ${persIc(p)} <span>${FLAG[p.nat]}</span>${p.listed?' <span class="pill warn">à vendre</span>':''}</td><td>${roleC(p.role)}</td><td>${p.age}</td><td>${ovrB(ovr(p))}</td><td class="mut">${potRange(p)}</td>
  ${['hp','snd','ovl'].map(m=>`<td>${Math.round(modeBase(p,m))}</td>`).join('')}<td>${bar(p.form,bcol(p.form))}</td><td>${bar(p.morale,bcol(p.morale))}</td><td>${bar(p.fatigue,bcol(p.fatigue,1))}</td>
  <td>${p.st.m?(p.st.k/Math.max(1,p.st.d)).toFixed(2):'—'}</td><td>${p.st.m?(p.st.rs/p.st.m).toFixed(2):'—'}</td><td>${fmtK(p.wage)}</td><td class="${yearsLeft(p)<=0||(yearsLeft(p)<=1)?'warn':''}">S${p.contractEnd}</td></tr>`).join('')}</table></div>
  <p class="mut" style="margin:10px 0 0"><span class="starter">●</span> titulaire · Cliquez sur un joueur pour son profil, prolonger, libérer ou le mettre sur la liste des transferts.</p></div>`}
@@ -1066,7 +1087,8 @@ VIEWS.tactics=()=>{const t=me();
  return`<div class="h1">Tactiques <small>composition, rôles et stratégie par mode</small></div>
  <div class="grid g2"><div class="card"><h3>Quatre titulaires</h3>${lineupEditor()}</div><div class="card"><h3>Stratégie par mode</h3>${tacticEditor()}</div></div>
  <div class="grid g3" style="margin-top:14px">${['hp','snd','ovl'].map(m=>{const ps=lineupPlayers(G.me);return`<div class="card"><h3>${MODE[m]}</h3>${ps.map(p=>`<div class="row" style="justify-content:space-between;margin:3px 0"><span><b>${p.tag}</b> ${roleC(p.role)}</span><span>${ovrB(Math.round(effMode(p,m)))}</span></div>`).join('')}</div>`}).join('')}</div>
- <div class="card" style="margin-top:14px"><h3>Chimie d'équipe</h3><div class="row"><div style="flex:1">${bar(t.chem,bcol(t.chem))}</div><b>${Math.round(t.chem)}%</b></div><p class="mut" style="margin:8px 0 0">La chimie monte chaque jour avec un effectif stable et chute à chaque changement de titulaire. Elle influence directement la force à chaque carte (jusqu'à ±3.5).</p></div>`}
+ <div class="card" style="margin-top:14px"><h3>Chimie d'équipe</h3><div class="row"><div style="flex:1">${bar(t.chem,bcol(t.chem))}</div><b>${Math.round(t.chem)}%</b></div><p class="mut" style="margin:8px 0 0">La chimie monte chaque jour avec un effectif stable et chute à chaque changement de titulaire. Elle influence directement la force à chaque carte (jusqu'à ±3.5).</p></div>
+ <div class="card" style="margin-top:14px"><h3>Tes cartes <span class="r mut">utile pour le veto</span></h3><div class="grid g3">${['hp','snd','ovl'].map(m=>`<div><b>${MODE[m]}</b>${MAPS[m].slice().sort((a,b)=>mapAff(G.me,m,b)-mapAff(G.me,m,a)).map(x=>`<div class="row" style="justify-content:space-between;margin:3px 0"><span>${x}</span>${myAffHTML(m,x)}</div>`).join('')}</div>`).join('')}</div><p class="mut" style="margin:8px 0 0">Chaque équipe a ses cartes fortes et faibles. Ton niveau sur une carte progresse un peu à chaque fois que tu la joues, surtout en cas de victoire. Les valeurs sont redistribuées à chaque nouvelle saison.</p></div>`}
 
 /* ---- Entraînement & Staff ---- */
 VIEWS.train=()=>{
@@ -1166,10 +1188,10 @@ VIEWS.fin=()=>{
 
 /* ---- Système ---- */
 VIEWS.sys=()=>`<div class="h1">Système</div><div class="grid g2"><div class="card"><h3>Sauvegarde</h3><p class="mut">La partie est sauvegardée automatiquement (navigateur) à chaque journée.</p><div class="row"><button class="btn" onclick="save();toast('Sauvegardé')">💾 Sauvegarder</button><button class="btn" onclick="A.exportSave()">⬇ Exporter</button><label class="btn">⬆ Importer<input type="file" accept=".json" hidden onchange="A.importSave(this)"></label><button class="btn dan" onclick="A.reset()">Nouvelle partie</button></div></div>
- <div class="card"><h3>Comment jouer</h3><ul style="margin:0;padding-left:18px;line-height:1.6"><li>Une saison = 4 Stages (5 journées) + 2 Minors (Pro-Am, groupes GSL) + 4 Majors (double élimination) + Championnat (groupes + playoffs).</li><li>Les Minors rapportent des points de stage pour le seeding du Major. Matchs en Best-of-3, 5 ou 7 selon le tour.</li><li>Gagne du temps : « Simuler le match » ou « Jusqu'au prochain tournoi ».</li><li>Composez vos 4 titulaires, réglez vos tactiques par mode, gérez moral, forme et fatigue.</li><li>Entraînez vos jeunes pépites, boostez votre staff, négociez des contrats.</li><li>Respectez le plafond salarial (${fmtK(CAP)}) et vos objectifs pour garder la confiance du board.</li></ul></div></div>
+ <div class="card"><h3>Comment jouer</h3><ul style="margin:0;padding-left:18px;line-height:1.6"><li>Une saison = 4 Stages (5 journées) + 2 Minors (Pro-Am, groupes GSL) + 4 Majors (double élimination) + Championnat (groupes + playoffs).</li><li>Les Minors rapportent des points de stage pour le seeding du Major. Matchs en Best-of-3, 5 ou 7 selon le tour.</li><li>Match en direct : veto des cartes, puis tactique, temps morts et remplacements entre chaque carte.</li><li>Vestiaire : personnalités, tensions et décisions influencent la force de ton équipe.</li><li>Gagne du temps : « Simuler le match » ou « Jusqu'au prochain tournoi ».</li><li>Composez vos 4 titulaires, réglez vos tactiques par mode, gérez moral, forme et fatigue.</li><li>Entraînez vos jeunes pépites, boostez votre staff, négociez des contrats.</li><li>Respectez le plafond salarial (${fmtK(CAP)}) et vos objectifs pour garder la confiance du board.</li></ul></div></div>
  ${NET.on?`<div class="card" style="margin-top:14px"><h3>Classements en ligne</h3><div class="row"><span>Pseudo : <b>${esc(NET.name()||'—')}</b></span><button class="btn sm" onclick="A.askName(()=>render())">${NET.name()?'Modifier':'Choisir'}</button><button class="btn sm" onclick="A.lb()">🌍 Voir les classements</button>${NET.uid()?'<button class="btn sm dan" onclick="A.forget()">Supprimer mes scores en ligne</button>':''}</div><p class="mut" style="margin:8px 0 0;font-size:13px">Rien n'est envoyé tant que tu ne publies pas un score. Seuls ton pseudo, ton score et un identifiant aléatoire sont enregistrés.</p></div>`:''}
  <div class="card" style="margin-top:14px"><h3>Rythme de jeu</h3><label class="row" style="cursor:pointer"><input type="checkbox" ${G&&G.opt&&G.opt.auto?'checked':''} onchange="A.setOpt('auto',this.checked)"> <span>Simulation automatique : « Jouer » simule directement le match, sans aperçu (les enjeux restent affichés sur le tableau de bord).</span></label></div>
- <div class="card" style="margin-top:14px"><h3>Son</h3><div class="row"><button class="btn sm sndbtn" onclick="A.sound()">${SFX.muted()?'🔇':'🔊'}</button><label class="mut">Musique <input type="range" min="0" max="1" step=".05" value="${SFX.cfg.m}" oninput="SFX.setVol('m',+this.value)"></label><label class="mut">Effets <input type="range" min="0" max="1" step=".05" value="${SFX.cfg.s}" oninput="SFX.setVol('s',+this.value)"></label><label class="mut">Ambiance <select class="sel" onchange="A.soundTheme(this.value)">${[['classic','Classique'],['chill','Chill'+(ED.public&&!premium()?' (Premium)':'')],['synth','Synthwave'+(ED.public&&!premium()?' (Premium)':'')]].map(([k,l])=>`<option value="${k}" ${SFX.cfg.th===k?'selected':''}>${l}</option>`).join('')}</select></label></div>
+ <div class="card" style="margin-top:14px"><h3>Son</h3><div class="row"><button class="btn sm sndbtn" onclick="A.sound()">${SFX.muted()?'🔇':'🔊'}</button><label class="mut">Musique <input type="range" min="0" max="1" step=".05" value="${SFX.cfg.m}" oninput="SFX.setVol('m',+this.value)"></label><label class="mut">Effets <input type="range" min="0" max="1" step=".05" value="${SFX.cfg.s}" oninput="SFX.setVol('s',+this.value)"></label><label class="mut">Ambiance <select class="sel" onchange="A.soundTheme(this.value)">${[['ops','Opérations (orchestre hybride)'],['classic','Classique'],['chill','Chill'+(ED.public&&!premium()?' (Premium)':'')],['synth','Synthwave'+(ED.public&&!premium()?' (Premium)':'')]].map(([k,l])=>`<option value="${k}" ${SFX.cfg.th===k?'selected':''}>${l}</option>`).join('')}</select></label></div>
 ${ED.public?`<div class="row" style="margin-top:10px"><button class="btn warn" onclick="A.premium()">${premium()?'Premium actif ✔':'Passer Premium'}</button><button class="btn" onclick="A.cookies()">Gérer les cookies</button></div>`:''}</div>
 <p class="mut" style="margin-top:14px">${ED.sysNote}</p>`;
 
@@ -1226,7 +1248,7 @@ function prematchModal(){
  ${stakesHTML(day,m)}
  <div class="card" style="margin-bottom:12px"><h3>Rapport de l'analyste</h3><div>Votre meilleur terrain : <b class="good">${MODE[best.x]}</b> (${best.d>=0?'+':''}${best.d.toFixed(1)}). Point faible : <b class="${worst.d<0?'bad':'warn'}">${MODE[worst.x]}</b> (${worst.d>=0?'+':''}${worst.d.toFixed(1)}).<br><span class="mut">Adversaire : ${ops.map(p=>`${p.tag} (${p.role} ${ovr(p)})`).join(', ')}.</span></div></div>
  <div class="grid g2"><div class="card"><h3>Vos titulaires</h3>${lineupEditor()}</div><div class="card"><h3>Stratégie</h3>${tacticEditor()}</div></div>
- <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" onclick="A.close()">Plus tard</button><button class="btn" onclick="A.quickMatch()">⏭ Simuler rapidement</button><button class="btn pri" onclick="A.startMatch()">⚔ Lancer le match</button></div>`}
+ <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" onclick="A.close()">Plus tard</button><button class="btn" onclick="A.quickMatch()">⏭ Simuler rapidement</button><button class="btn pri" onclick="A.startMatch()">⚔ Jouer le match (veto + direct)</button></div>`}
 function reportHTML(res,noHead){
  const a=res.a,b=res.b,wA=res.sa>res.sb;
  const names=t=>t===a?a:b;
@@ -1436,6 +1458,7 @@ const A={locked:false,
   news(`${p.tag} est libéré par ${T(G.me).short}.`);A.close();refreshUI()},
  advance(){
   if(G.mode==='player')return advanceP();
+  if(G.tl&&G.tl.pending){openTeamEvent();return}
   if(G.phase==='offseason'){
    const ex=roster(G.me).filter(p=>p.contractEnd<=G.season);
    openModal(()=>`<div class="mh"><h2>Lancer la saison ${G.season+1} ?</h2><button class="btn x" onclick="A.close()">✕</button></div>${ex.length?`<div class="card" style="border-left:3px solid var(--bad)"><b class="bad">Contrats expirés — ces joueurs partiront :</b><br>${ex.map(p=>`${p.tag} (${ovr(p)})`).join(', ')}<div class="mut">Prolongez-les depuis Marché → Mes contrats.</div></div>`:'<p>Tous vos contrats sont en ordre.</p>'}<p class="mut">Les clubs IA compléteront leurs effectifs parmi les agents libres restants.</p><div class="row"><button class="btn" onclick="A.close();A.view('market')">Retour au marché</button><button class="btn pri" onclick="startNextSeason()">Lancer la saison</button></div>`,'sm');return}
@@ -1451,8 +1474,8 @@ const A={locked:false,
  },
  afterMatch(){A.close();finishDay()},
  simNext(){
-  if(!rosterOK())return;let g=0;
-  while(G.phase==='season'&&g++<80){const d=G.cal[G.day];prepareDay(d);if(userMatch(d))break;if(G.mode==='player'&&G.car.pending)break;finishDay(true)}
+  if(!rosterOK())return;if(G.mode==='manager'&&G.tl&&G.tl.pending){openTeamEvent();return}let g=0;
+  while(G.phase==='season'&&g++<80){const d=G.cal[G.day];prepareDay(d);if(userMatch(d))break;if(G.mode==='player'&&G.car.pending)break;if(G.mode==='manager'&&G.tl&&G.tl.pending)break;finishDay(true)}
   refreshUI();
   if(G.phase==='season'){const d=G.cal[G.day];if(d&&userMatch(d)&&!ui.fn)A.advance()}
  }
@@ -1943,7 +1966,7 @@ function prematchP(){
   <h3 style="margin-top:12px">Mentalité</h3>${Object.keys(MIND).map(k=>`<div class="opt ${c.mind===k?'on':''}" style="margin:5px 0" onclick="A.setMind('${k}')"><div class="oi">${MIND[k].ic}</div><div><b>${MIND[k].n}</b><div class="mut">${MIND[k].d}</div></div></div>`).join('')}</div>
  <div class="card"><h3>Duel des équipes</h3>${['hp','snd','ovl'].map(x=>{const a=teamStrength(G.me,x,'bal').S,b=teamStrength(o,x,'bal').S,s=a+b;return`<div class="cmp"><b class="${a>=b?'good':''}">${a.toFixed(1)}</b><div><div class="mut c" style="font-size:12px;letter-spacing:.14em">${MODE[x].toUpperCase()}</div><div class="b2"><i style="width:${a/s*100}%;background:var(--team)"></i><i style="width:${b/s*100}%;background:#55657e"></i></div></div><b class="rt ${b>a?'bad':''}">${b.toFixed(1)}</b></div>`}).join('')}
   <div class="mut" style="margin-top:8px">Adversaires : ${ops.map(x=>`${x.tag} (${x.role} ${ovr(x)})`).join(', ')}.</div></div></div>
- <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" onclick="A.close()">Plus tard</button><button class="btn" onclick="A.quickMatch()">⏭ Simuler rapidement</button><button class="btn pri" onclick="A.startMatch()">⚔ Regarder le match</button></div>`}
+ <div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" onclick="A.close()">Plus tard</button><button class="btn" onclick="A.quickMatch()">⏭ Simuler rapidement</button><button class="btn pri" onclick="A.startMatch()">⚔ Jouer le match en direct</button></div>`}
 /* ---------- fin de saison & carrière ---------- */
 function careerSeasonEnd(champ,pos){
  const c=G.car,p=P(G.pid),s=p.st,b=G.brk.champs||{};
@@ -2006,7 +2029,7 @@ Object.assign(A,{
  home(){save();homeStop();A.close();G=null;CR=null;menuSel=null;ui.screen='home';render()},
  newManager(){A.close();genLeague();G.mode='manager';menuSel=null;ui.screen='teams';render()},
  newPlayer(){A.close();genLeague();G.mode='player';CR=newCR();ui.screen='creator';render()},
- continue(mode){const s=loadSave(mode);if(!s)return;if(!s.evs){toast('Cette sauvegarde date d\'avant le nouveau format de saison : lance une nouvelle partie.',1);return}G=s;G.mode=G.mode||'manager';ui.screen='game';menuSel=null;setObjectives();render();if(G.mode==='player')setTimeout(openEvent,60)},
+ continue(mode){const s=loadSave(mode);if(!s)return;if(!s.evs){toast('Cette sauvegarde date d\'avant le nouveau format de saison : lance une nouvelle partie.',1);return}G=s;G.mode=G.mode||'manager';ui.screen='game';menuSel=null;setObjectives();render();setTimeout(G.mode==='player'?openEvent:openTeamEvent,60)},
  nameset2(v){NAMESET=v;try{localStorage.setItem('cc_ns',v)}catch(e){}renderHome()},
  reset(){if(!confirm('Supprimer cette partie ? Cette action est définitive.'))return;try{localStorage.removeItem(G.mode==='player'?KEY_P:KEY_M)}catch(e){}A.home()},
  howto(){openModal(()=>`<div class="mh"><h2>Comment jouer</h2><button class="btn x" onclick="A.close()">✕</button></div><div class="grid g2"><div class="card"><h3>🧠 Carrière Manager</h3><ul class="how"><li>Choisis une franchise et dirige-la sur plusieurs saisons.</li><li>Compose tes 4 titulaires, règle les tactiques de chaque mode.</li><li>Recrute, entraîne les jeunes, gère le plafond salarial et le board.</li></ul></div><div class="card"><h3>⚡ Défi du jour</h3><ul class="how"><li>Le même draft et les mêmes adversaires pour tous les joueurs, chaque jour.</li><li>4 joueurs, un budget, trois matchs : choisis ta tactique carte par carte.</li><li>Partage ta grille, défie un ami avec un code, compare-toi au classement mondial.</li></ul></div><div class="card"><h3>🎮 Carrière Joueur</h3><ul class="how"><li>Crée ton joueur : apparence, rôle, origine, personnalité, traits.</li><li>Chaque semaine : choisis ton programme (aim, VOD, stream, repos…).</li><li>Des événements te laissent faire des choix qui changent ta carrière.</li><li>Gagne ta place, signe de meilleurs contrats, vise la légende.</li></ul></div></div><p class="mut">Format de la saison : 4 Stages · 2 Minors (Pro-Am, groupes GSL) · 4 Majors (double élimination) · Championnat. Matchs en Best-of-3, 5 ou 7 ; tu peux les suivre en direct ou les simuler d'un clic.</p>`)},
@@ -2052,48 +2075,138 @@ Object.assign(A,{
    ========================================================= */
 (function(){
  const KEYA='cc_audio_v1';
- let ctx=null,master,mg,sg,noise,theme='',want='',timer=0,step=0,nextT=0;
- const cfg={m:.45,s:.7,mute:false,th:'classic'};
+ let ctx=null,master,M=null,S=null,mg,sg,noise,theme='',want='',timer=0,step=0,nextT=0,level=0;
+ const cfg={m:.45,s:.7,mute:false,th:'ops'};
  try{Object.assign(cfg,JSON.parse(localStorage.getItem(KEYA)||'{}'))}catch(e){}
+ if(!cfg.v2){cfg.v2=1;cfg.th='ops'}
  const save=()=>{try{localStorage.setItem(KEYA,JSON.stringify(cfg))}catch(e){}};
  const hz=n=>440*Math.pow(2,(n-69)/12);
+ /* --- anciens thèmes (boucles simples) --- */
  const TH={home:{bpm:80,pad:1,bass:1,arp:1,drums:0},game:{bpm:90,pad:1,bass:1,arp:1,drums:0,hat:1},match:{bpm:122,pad:1,bass:2,arp:2,drums:1}};
  const PROG={classic:{ch:[[57,60,64],[53,57,60],[48,52,55],[55,59,62]],root:[45,41,36,43],wave:'sawtooth'},
   chill:{ch:[[62,65,69,72],[55,59,62,65],[60,64,67,71],[57,60,64,67]],root:[38,43,36,45],wave:'triangle'},
   synth:{ch:[[57,60,64],[55,59,62],[53,57,60],[52,56,59]],root:[45,43,41,40],wave:'square'}};
+ let cv=null;
+ function mkBus(vol){
+  const g=ctx.createGain();g.gain.value=vol;
+  if(!cv){cv=ctx.createConvolver();const len=Math.floor(ctx.sampleRate*1.5),ir=ctx.createBuffer(1,len,ctx.sampleRate),d=ir.getChannelData(0);let lp=0;for(let i=0;i<len;i++){const x=(Math.random()*2-1)*Math.pow(1-i/len,2.4);lp+=(x-lp)*.45;d[i]=lp}
+   cv.normalize=true;cv.buffer=ir;const wet=ctx.createGain();wet.gain.value=1.15;cv.connect(wet);wet.connect(master)}
+  const snd=ctx.createGain();snd.gain.value=vol;snd.connect(cv);
+  const lo=ctx.createGain();lo.gain.value=.22;lo.connect(snd);const hi=ctx.createGain();hi.gain.value=.55;hi.connect(snd);
+  return{g,lo,hi,snd}}
  function init(){
   if(ctx)return true;
   try{ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){return false}
-  master=ctx.createGain();master.gain.value=cfg.mute?0:1;master.connect(ctx.destination);
-  mg=ctx.createGain();mg.gain.value=cfg.m*.5;mg.connect(master);sg=ctx.createGain();sg.gain.value=cfg.s*.6;sg.connect(master);
+  return setup()}
+ function setup(){
+  master=ctx.createGain();master.gain.value=cfg.mute?0:1;
+  const cp=ctx.createDynamicsCompressor();cp.threshold.value=-14;cp.ratio.value=5;cp.attack.value=.004;cp.release.value=.22;master.connect(cp);cp.connect(ctx.destination);
+  cv=null;M=mkBus(cfg.m*.9);S=mkBus(cfg.s*.9);M.g.connect(master);S.g.connect(master);mg=M.g;sg=S.g;
   const n=ctx.sampleRate;noise=ctx.createBuffer(1,n,n);const d=noise.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;
   if(want)startMusic(want);return true}
+ const out=(node,bus,send)=>{node.connect(bus.g);if(send)node.connect(send===2?bus.hi:bus.lo)};
+ /* --- briques sonores de base --- */
  function tone(type,f,t,dur,vol,dest,f2){
   const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(dest||sg);o.start(t);o.stop(t+dur+.05)}
  function nz(t,dur,vol,type,f,dest){
   const s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=noise;fl.type=type;fl.frequency.value=f;
   g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(fl);fl.connect(g);g.connect(dest||sg);s.start(t);s.stop(t+dur+.05)}
- function pad(ch,t,dur,wave,lp){
-  ch.forEach((n,i)=>{[-6,6].forEach(dt=>{const o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();o.type=wave;o.frequency.value=hz(n);o.detune.value=dt;f.type='lowpass';f.frequency.value=lp;
-   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05,t+dur*.35);g.gain.linearRampToValueAtTime(.0001,t+dur);o.connect(f);f.connect(g);g.connect(mg);o.start(t);o.stop(t+dur+.1)})})}
- function kick(t){tone('sine',150,t,.22,.9,mg,42)}
- function snare(t){nz(t,.14,.35,'bandpass',1800,mg);tone('triangle',200,t,.08,.25,mg,120)}
- function hat(t,v){nz(t,.04,v||.1,'highpass',7000,mg)}
+ /* --- instruments « orchestre hybride » --- */
+ function osc(type,n,t,end,det){const o=ctx.createOscillator();o.type=type;o.frequency.value=hz(n);if(det)o.detune.value=det;o.start(t);o.stop(end);return o}
+ function strings(n,t,dur,vol,bus,att){ // cordes tenues (une note ou un accord)
+  const ns=Array.isArray(n)?n:[n],f=ctx.createBiquadFilter(),g=ctx.createGain(),a=att||Math.min(.5,dur*.35),end=t+dur+.4;f.type='lowpass';f.frequency.value=Math.min(3200,hz(ns[ns.length-1])*4+500);f.Q.value=.4;
+  ns.forEach((x,i)=>{osc('sawtooth',x,t,end,-8).connect(f);if(ns.length<3||i!==1)osc('sawtooth',x,t,end,7).connect(f)});f.connect(g);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+a);g.gain.setValueAtTime(vol,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.35);out(g,bus,2)}
+ function spic(n,t,vol,bus){ // cordes spiccato (ostinato)
+  const f=ctx.createBiquadFilter(),g=ctx.createGain(),end=t+.17;f.type='lowpass';f.frequency.value=Math.min(4200,hz(n)*4.2);
+  osc('sawtooth',n,t,end,0).connect(f);f.connect(g);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol*1.5,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+.15);out(g,bus,1)}
+ function brass(n,t,dur,vol,bus){ // cuivres graves
+  const f=ctx.createBiquadFilter(),g=ctx.createGain(),end=t+dur+.3,b=hz(n);f.type='lowpass';f.Q.value=1.2;
+  f.frequency.setValueAtTime(b*1.2,t);f.frequency.linearRampToValueAtTime(Math.min(2600,b*7),t+Math.min(.22,dur*.4));f.frequency.linearRampToValueAtTime(Math.min(1500,b*3.2),t+dur);
+  osc('sawtooth',n,t,end,-5).connect(f);osc('sawtooth',n,t,end,6).connect(f);f.connect(g);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.07);g.gain.setValueAtTime(vol*.85,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.25);out(g,bus,2)}
+ function horn(n,t,dur,vol,bus){ // cor (mélodie)
+  const f=ctx.createBiquadFilter(),g=ctx.createGain(),end=t+dur+.5;f.type='lowpass';f.frequency.value=Math.min(2400,hz(n)*3.2);f.Q.value=.7;
+  const a=osc('triangle',n,t,end,0),b=osc('sawtooth',n,t,end,4),bg=ctx.createGain();bg.gain.value=.42;a.connect(f);b.connect(bg);bg.connect(f);
+  const l=ctx.createOscillator(),lg=ctx.createGain();l.frequency.value=5.2;lg.gain.setValueAtTime(0,t);lg.gain.linearRampToValueAtTime(7,t+Math.min(.5,dur));l.connect(lg);lg.connect(a.detune);lg.connect(b.detune);l.start(t);l.stop(end);
+  f.connect(g);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.11);g.gain.setValueAtTime(vol*.9,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.35);out(g,bus,2)}
+ function piano(n,t,vol,bus){
+  const g=ctx.createGain(),end=t+2.2;osc('sine',n,t,end,0).connect(g);const h=osc('triangle',n+12,t,end,3),hg=ctx.createGain();hg.gain.value=.22;h.connect(hg);hg.connect(g);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.006);g.gain.exponentialRampToValueAtTime(.0001,t+2);out(g,bus,2)}
+ function pulse(n,t,dur,vol,bus){ // basse pulsée
+  const f=ctx.createBiquadFilter(),g=ctx.createGain(),end=t+dur+.05;f.type='lowpass';f.Q.value=3;f.frequency.setValueAtTime(900,t);f.frequency.exponentialRampToValueAtTime(220,t+dur);
+  osc('sawtooth',n,t,end,0).connect(f);f.connect(g);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol*1.4,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);out(g,bus,0)}
+ function sub(n,t,dur,vol,bus){const g=ctx.createGain(),end=t+dur+.4;osc('sine',n,t,end,0).connect(g);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.3);g.gain.setValueAtTime(vol,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.3);out(g,bus,0)}
+ function taiko(t,vol,bus,p){
+  const o=ctx.createOscillator(),g=ctx.createGain(),b=p||92;o.type='sine';o.frequency.setValueAtTime(b,t);o.frequency.exponentialRampToValueAtTime(b*.45,t+.26);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+.42);o.connect(g);out(g,bus,1);o.start(t);o.stop(t+.5);
+  const s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),ng=ctx.createGain();s.buffer=noise;fl.type='lowpass';fl.frequency.value=420;ng.gain.setValueAtTime(vol*.7,t);ng.gain.exponentialRampToValueAtTime(.0001,t+.11);s.connect(fl);fl.connect(ng);out(ng,bus,1);s.start(t);s.stop(t+.15)}
+ function boom(t,vol,bus){
+  const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(64,t);o.frequency.exponentialRampToValueAtTime(27,t+1.3);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+1.7);o.connect(g);out(g,bus,2);o.start(t);o.stop(t+1.8);
+  const s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),ng=ctx.createGain();s.buffer=noise;fl.type='lowpass';fl.frequency.value=160;ng.gain.setValueAtTime(vol*.8,t);ng.gain.exponentialRampToValueAtTime(.0001,t+.5);s.connect(fl);fl.connect(ng);out(ng,bus,2);s.start(t);s.stop(t+.6)}
+ function nzv(t,dur,vol,type,f,bus,send,q){const s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=noise;s.loop=true;fl.type=type;fl.frequency.value=f;if(q)fl.Q.value=q;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(fl);fl.connect(g);out(g,bus,send);s.start(t,Math.random()*.5);s.stop(t+dur+.05)}
+ const snr=(t,vol,bus)=>{nzv(t,.1,vol,'bandpass',2100,bus,1,.7);const g=ctx.createGain();const o=ctx.createOscillator();o.type='triangle';o.frequency.setValueAtTime(210,t);o.frequency.exponentialRampToValueAtTime(140,t+.06);g.gain.setValueAtTime(vol*.5,t);g.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(g);out(g,bus,0);o.start(t);o.stop(t+.1)};
+ const hatv=(t,vol,bus)=>nzv(t,.035,vol,'highpass',7500,bus,0);
+ const crash=(t,vol,bus)=>nzv(t,1.7,vol,'highpass',4200,bus,2);
+ function swell(t,dur,vol,bus){const s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=noise;s.loop=true;fl.type='highpass';fl.frequency.setValueAtTime(1200,t);fl.frequency.linearRampToValueAtTime(5200,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.04);s.connect(fl);fl.connect(g);out(g,bus,1);s.start(t);s.stop(t+dur+.1)}
+ function clk(t,vol,bus,hi){const o=ctx.createOscillator(),g=ctx.createGain();o.type='square';o.frequency.value=hi?2300:1700;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+.02);o.connect(g);out(g,bus,1);o.start(t);o.stop(t+.03)}
+ function ping(n,t,vol,bus){const g=ctx.createGain(),end=t+1.6;osc('sine',n,t,end,0).connect(g);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+1.5);out(g,bus,2)}
+ /* --- bande-son originale « Opérations » (ré mineur) --- */
+ const CH={Dm:[38,[50,53,57]],Bb:[34,[46,50,53]],Gm:[31,[43,46,50]],A:[33,[45,49,52]],As:[33,[45,50,52]],F:[29,[41,45,48]],C:[36,[48,52,55]]};
+ const mel=l=>{const o={};l.forEach(([b,p,n,d])=>{(o[b*16+p]=o[b*16+p]||[]).push([n,d])});return o};
+ const SONGS={
+  home:{bpm:76,vol:.85,ch:['Dm','Dm','Bb','Bb','Gm','Gm','As','A','Dm','Dm','Bb','C','Gm','Bb','A','Dm'],
+   mel:mel([[0,0,62,12],[0,12,65,4],[1,0,64,8],[1,8,57,8],[2,0,62,12],[2,12,65,4],[3,0,67,8],[3,8,65,8],[4,0,62,8],[4,8,58,8],[5,0,55,16],[6,0,57,8],[6,8,62,8],[7,0,61,16],
+    [8,0,69,12],[8,12,67,4],[9,0,65,8],[9,8,62,8],[10,0,70,12],[10,12,69,4],[11,0,67,8],[11,8,64,8],[12,0,62,4],[12,4,67,4],[12,8,70,8],[13,0,69,8],[13,8,65,8],[14,0,64,12],[14,12,61,4],[15,0,62,16]]),
+   play(bar,pos,t,spb){const[r,tri]=CH[this.ch[bar]],B=spb*16,m=this.mel[bar*16+pos];
+    if(pos===0){strings(tri.map(n=>n+12),t,B*.96,.034,M);sub(r,t,B*.9,.16,M);if(bar%4===0)boom(t,.3,M);if(bar%4===2)[r+12,r+19].forEach(n=>brass(n,t,B*.8,.05,M))}
+    if(bar>=4&&(pos===0||pos===3))taiko(t,pos?.14:.22,M,78);
+    if(bar<8){if(pos===4)piano(tri[2]+12,t,.1,M);if(pos===10)piano(tri[0]+24,t,.08,M)}
+    else{if(pos%2===0){clk(t,.012,M,pos%4===0);spic([tri[0]+12,tri[0]+12,tri[2]+12,tri[0]+12,tri[1]+12,tri[0]+12,tri[2]+12,tri[0]+12][pos/2],t,.03,M)}}
+    if(m)m.forEach(([n,d])=>{horn(n,t,spb*d*.92,bar<8?.075:.095,M);if(bar>=8)strings(n+12,t,spb*d*.9,.022,M,.2)});
+    if(bar===15&&pos===8)swell(t,spb*8,.05,M)}},
+  game:{bpm:92,vol:1.5,ch:['Dm','Dm','F','C','Dm','Dm','Bb','A','Dm','Dm','F','C','Gm','Bb','A','A'],
+   mel:mel([[6,0,65,8],[6,8,62,8],[7,0,61,16],[13,8,65,8],[14,0,64,16]]),
+   play(bar,pos,t,spb){const[r,tri]=CH[this.ch[bar]],B=spb*16,m=this.mel[bar*16+pos];
+    if(pos===0){strings(tri.map(n=>n+12),t,B*.96,.024,M);if(bar%4===0)taiko(t,.16,M,70)}
+    if(pos%2===0)pulse(r<36?r+12:r,t,spb*1.7,pos===0?.15:.1,M);
+    if(pos%4===2)hatv(t,.03,M);if(pos%8===4)clk(t,.011,M,0);
+    if(pos===8&&bar%8===0)ping(81,t,.05,M);if(pos===8&&bar%8===4)ping(86,t,.035,M);
+    if(bar%2===1&&pos===10)taiko(t,.09,M,70);
+    if(bar>=8&&pos%4===0)piano(tri[(pos/4)%3]+24,t,.045,M);
+    if(m)m.forEach(([n,d])=>horn(n,t,spb*d*.92,.05,M))}},
+  match:{bpm:126,vol:1.55,ch:['Dm','Dm','Bb','Bb','F','F','C','A','Dm','F','Bb','Gm','Dm','C','Bb','A'],
+   mel:mel([[8,0,62,8],[8,8,65,4],[8,12,69,4],[9,0,72,12],[9,12,69,4],[10,0,70,8],[10,8,74,8],[11,0,67,8],[11,8,70,4],[11,12,69,4],[12,0,65,4],[12,4,69,4],[12,8,74,8],[13,0,76,12],[13,12,72,4],[14,0,74,8],[14,8,70,8],[15,0,69,8],[15,8,73,8]]),
+   play(bar,pos,t,spb,lv){const[r,tri]=CH[this.ch[bar]],B=spb*16,m=this.mel[bar*16+pos];
+    const o=[tri[0]+12,tri[0]+24,tri[2]+12,tri[0]+24,tri[1]+12,tri[0]+24,tri[2]+12,tri[0]+24][pos%8];
+    if(lv>=1||pos%2===0)spic(lv>=2&&pos%2?o+12:o,t,lv>=2?.07:lv?.06:.045,M);
+    if(pos%2===0)pulse(r<36?r+12:r,t,spb*1.7,pos%8===0?.2:.13,M);
+    if(pos===0){if(lv>=1||bar%2===0)[r+12,r+19].forEach(n=>brass(n,t,B*.85,lv>=2?.075:lv?.06:.04,M));if(lv>=1)strings(tri.map(n=>n+24),t,B*.95,.02,M);if(bar%8===0&&lv>=1){crash(t,.07,M);boom(t,.34,M)}}
+    if((lv>=1?[0,3,6,10,12]:[0,6,10]).includes(pos))taiko(t,pos===0?.36:.24,M,pos%4===0?88:104);
+    if(lv>=2&&(pos===14||pos===15))taiko(t,.16,M,118);
+    if(lv>=1){if(pos===4||pos===12)snr(t,.13,M);if(pos%2===0)hatv(t,pos%4===2?.04:.022,M);if(lv>=2&&bar%2===1&&pos>=13)snr(t,.05+(pos-13)*.035,M)}
+    if(bar%8===7&&pos===8&&lv>=1)swell(t,spb*8,.06,M);
+    if(m&&lv>=1)m.forEach(([n,d])=>{if(lv>=2)horn(n,t,spb*d*.92,.1,M);strings(n+(lv>=2?12:0),t,spb*d*.9,lv>=2?.03:.035,M,.12)})}}};
  function playStep(s,t,th,P){
   const bar=(s>>4)&3,pos=s&15,ch=P.ch[bar],spb=60/th.bpm/4;
-  if(pos===0&&th.pad)pad(ch,t,spb*16,P.wave==='square'?'sawtooth':P.wave,theme==='match'?1500:800);
+  if(pos===0&&th.pad)ch.forEach(n=>{[-6,6].forEach(dt=>{const o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter(),dur=spb*16;o.type=P.wave==='square'?'sawtooth':P.wave;o.frequency.value=hz(n);o.detune.value=dt;f.type='lowpass';f.frequency.value=theme==='match'?1500:800;
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05,t+dur*.35);g.gain.linearRampToValueAtTime(.0001,t+dur);o.connect(f);f.connect(g);g.connect(mg);o.start(t);o.stop(t+dur+.1)})});
   if(th.bass&&(pos===0||pos===8||(th.bass>1&&(pos===4||pos===12||pos===6)))){tone('triangle',hz(P.root[bar]),t,spb*3.6,.5,mg)}
   if(th.arp&&(th.arp===2||pos%2===0)){const seq=[0,2,1,2,0,1,2,1],n=ch[seq[pos%8]%ch.length]+(pos%8>=4?12:0);tone(P.wave==='square'?'square':'triangle',hz(n+12),t,spb*1.6,P.wave==='square'?.06:.11,mg)}
-  if(th.drums){if(pos===0||pos===8||pos===10)kick(t);if(pos===4||pos===12)snare(t);if(pos%2===0)hat(t,pos%4===2?.12:.07)}
-  else if(th.hat&&pos%4===2)hat(t,.05)}
+  if(th.drums){if(pos===0||pos===8||pos===10)tone('sine',150,t,.22,.9,mg,42);if(pos===4||pos===12){nz(t,.14,.35,'bandpass',1800,mg);tone('triangle',200,t,.08,.25,mg,120)}if(pos%2===0)nz(t,.04,pos%4===2?.12:.07,'highpass',7000,mg)}
+  else if(th.hat&&pos%4===2)nz(t,.04,.05,'highpass',7000,mg)}
+ const ops=()=>cfg.th==='ops'||!PROG[cfg.th];
+ const busVol=()=>{if(!M)return;const k=ops()&&SONGS[theme]?SONGS[theme].vol:.55;M.g.gain.value=M.snd.gain.value=cfg.m*.9*k;S.g.gain.value=S.snd.gain.value=cfg.s*.9};
+ function stepAt(s,t){if(ops()){const sg_=SONGS[theme]||SONGS.game,spb=60/sg_.bpm/4;sg_.play((s>>4)%sg_.ch.length,s&15,t,spb,level);return spb}const th=TH[theme]||TH.game;playStep(s,t,th,PROG[cfg.th]);return 60/th.bpm/4}
  function sched(){
   if(!ctx||!theme||cfg.mute||ctx.state!=='running')return;
-  const th=TH[theme],P=PROG[cfg.th]||PROG.classic,spb=60/th.bpm/4;
   if(nextT<ctx.currentTime)nextT=ctx.currentTime+.05;
-  while(nextT<ctx.currentTime+.35){playStep(step,nextT,th,P);nextT+=spb;step=(step+1)%64}}
+  while(nextT<ctx.currentTime+.35){nextT+=stepAt(step,nextT);step=(step+1)%256}}
  function startMusic(name){
-  want=name;if(!ctx)return;if(theme===name)return;theme=name;step=0;nextT=ctx.currentTime+.1;
+  want=name;if(!ctx)return;if(theme===name)return;theme=name;step=0;nextT=ctx.currentTime+.1;busVol();
   if(!timer)timer=setInterval(sched,80)}
  const unlock=()=>{if(init()&&ctx.state==='suspended')ctx.resume();if(want&&!theme)startMusic(want)};
  ['pointerdown','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,unlock,{passive:true}));
@@ -2103,19 +2216,25 @@ Object.assign(A,{
  window.SFX={
   click(){if(!ok())return;const t=ctx.currentTime;tone('square',1100,t,.04,.05);tone('sine',1650,t+.01,.05,.04)},
   tick(){if(!ok())return;tone('triangle',1500,ctx.currentTime,.05,.04)},
-  good(){if(!ok())return;arp([72,76,79],0,.07,'triangle',.12)},
-  bad(){if(!ok())return;tone('sawtooth',220,ctx.currentTime,.3,.1,sg,110)},
-  win(){if(!ok())return;arp([60,64,67,72,76,79],0,.09,'triangle',.14,.5)},
-  lose(){if(!ok())return;arp([64,62,59,55],0,.16,'sine',.14,.5)},
+  good(){if(!ok())return;const t=ctx.currentTime;if(ops()){spic(74,t,.12,S);spic(77,t+.09,.12,S);spic(81,t+.18,.14,S);taiko(t+.18,.3,S,96)}else arp([72,76,79],0,.07,'triangle',.12)},
+  bad(){if(!ok())return;const t=ctx.currentTime;if(ops()){brass(41,t,.5,.12,S);taiko(t,.3,S,70)}else tone('sawtooth',220,t,.3,.1,sg,110)},
+  win(){if(!ok())return;const t=ctx.currentTime;if(ops()){[[62,0],[69,.15],[74,.3]].forEach(([n,d])=>brass(n,t+d,.16,.14,S));taiko(t,.5,S);taiko(t+.3,.4,S,104);const u=t+.47;[50,62,66,69,74].forEach(n=>brass(n,u,1.5,.085,S));strings([74,78,81],u,1.5,.05,S,.08);boom(u,.6,S);crash(u,.14,S)}else arp([60,64,67,72,76,79],0,.09,'triangle',.14,.5)},
+  lose(){if(!ok())return;const t=ctx.currentTime;if(ops()){[[57,0],[53,.38],[50,.76]].forEach(([n,d])=>strings(n,t+d,.34,.1,S,.05));const u=t+1.14;strings([38,45,50,53],u,1.6,.08,S,.2);taiko(u,.35,S,66);sub(26,u,1.4,.25,S)}else arp([64,62,59,55],0,.16,'sine',.14,.5)},
   coin(){if(!ok())return;arp([88,95],0,.08,'sine',.1,.25)},
   ach(){if(!ok())return;arp([79,84,88,91],0,.07,'sine',.12,.35)},
-  evt(){if(!ok())return;const t=ctx.currentTime;nz(t,.5,.12,'bandpass',900,sg);tone('sine',110,t,.5,.18,sg,70)},
+  evt(){if(!ok())return;const t=ctx.currentTime;if(ops()){swell(t,.45,.1,S);boom(t+.45,.5,S);brass(38,t+.45,.9,.1,S)}else{nz(t,.5,.12,'bandpass',900,sg);tone('sine',110,t,.5,.18,sg,70)}},
   err(){if(!ok())return;tone('square',140,ctx.currentTime,.18,.08,sg,90)},
+  timeout(){if(!ok())return;const t=ctx.currentTime;[0,.16].forEach(d=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(2500,t+d);o.frequency.linearRampToValueAtTime(2250,t+d+.12);g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.09,t+d+.01);g.gain.linearRampToValueAtTime(0,t+d+.13);o.connect(g);out(g,S,1);o.start(t+d);o.stop(t+d+.15)})},
+  ban(){if(!ok())return;const t=ctx.currentTime;taiko(t,.4,S,64);nzv(t,.12,.08,'bandpass',900,S,1,1)},
+  pick(){if(!ok())return;const t=ctx.currentTime;ping(81,t,.12,S);ping(88,t+.09,.08,S)},
+  mapStart(){if(!ok())return;const t=ctx.currentTime;swell(t,.5,.08,S);taiko(t+.5,.5,S,84);boom(t+.5,.4,S)},
   muted:()=>cfg.mute,
   toggle(){cfg.mute=!cfg.mute;save();if(init()){master.gain.value=cfg.mute?0:1;if(!cfg.mute){ctx.resume();if(want){theme='';startMusic(want)}}}document.querySelectorAll('.sndbtn').forEach(b=>b.textContent=cfg.mute?'🔇':'🔊');return cfg.mute},
-  setVol(k,v){cfg[k]=v;save();if(ctx){mg.gain.value=cfg.m*.5;sg.gain.value=cfg.s*.6}},
-  setTheme(t){cfg.th=t;save()},cfg};
- window.Music={set(n){want=n;if(ctx)startMusic(n)}};
+  setVol(k,v){cfg[k]=v;save();if(ctx)busVol()},
+  setTheme(t){cfg.th=t;save();if(ctx&&theme){const n=theme;theme='';startMusic(n)}else if(ctx)busVol()},cfg};
+ window.Music={set(n){want=n;if(ctx)startMusic(n)},level(n){level=clamp(n|0,0,2)},
+  _offline(name,lv,secs,sr){ctx=new OfflineAudioContext(2,Math.floor(secs*sr),sr);setup();theme=name;level=lv;busVol();let t=.05,s=0;while(t<secs-.5){t+=stepAt(s,t);s=(s+1)%256}return ctx},
+  _sfx(fn,secs,sr){ctx=new OfflineAudioContext(2,Math.floor(secs*sr),sr);setup();Object.defineProperty(ctx,'state',{get:()=>'running'});SFX[fn]();return ctx}};
 })();
 function soundBtn(){return`<button class="btn sm sndbtn" onclick="A.sound()" title="Son">${SFX.muted()?'🔇':'🔊'}</button>`}
 
@@ -2402,7 +2521,7 @@ Object.assign(A,{
  async activate(){const k=($('#lic').value||'').trim();if(!k)return;const m=$('#licmsg');m.textContent='Vérification…';const r=await verifyKey(k);
   if(r.ok){try{localStorage.setItem(PK,JSON.stringify({key:k,exp:r.exp,chk:Date.now()}))}catch(e){}A.close();toast('Premium activé !');if(window.SFX)SFX.ach();render()}else m.textContent=r.net?'Impossible de joindre le serveur de licences.':'Clé invalide ou expirée.'},
  sound(){SFX.toggle()},
- soundTheme(v){if(ED.public&&!premium()&&v!=='classic'){A.premium();render();return}SFX.setTheme(v);toast('Ambiance sonore changée')}
+ soundTheme(v){if(ED.public&&!premium()&&v!=='classic'&&v!=='ops'){A.premium();render();return}SFX.setTheme(v);toast('Ambiance sonore changée')}
 });
 
 
@@ -2441,15 +2560,16 @@ Object.assign(A,{
  quickMatch(){
   if(G.phase!=='season')return;const day=G.cal[G.day];prepareDay(day);const m=userMatch(day);if(!m||G.results[m.id])return;
   if(G.mode==='manager'&&!rosterOK())return;
+  if(G.mode==='manager'&&G.tl&&G.tl.pending){openTeamEvent();return}
   const pre=day.k==='league'?stageRank(day.stage).indexOf(G.me)+1:null;
   const res=runUserMatch();A.close();finishDay(true);render();quickResult(res,day,m,pre)},
- closeQR(){A.close();refreshUI();if(G.mode==='player')openEvent()},
+ closeQR(){A.close();refreshUI();if(G.mode==='player')openEvent();else openTeamEvent()},
  autoRun(){
-  if(G.phase!=='season')return;const start=G.cal[G.day],fromLeague=start.k==='league',lines=[];let g=0;
+  if(G.phase!=='season')return;if(G.mode==='manager'&&G.tl&&G.tl.pending){openTeamEvent();return}const start=G.cal[G.day],fromLeague=start.k==='league',lines=[];let g=0;
   while(G.phase==='season'&&g++<120){
    const d=G.cal[G.day];prepareDay(d);
    if(fromLeague&&d.k!=='league')break;if(!fromLeague&&d!==start&&d.k==='league')break;
-   if(G.mode==='player'&&G.car.pending)break;if(G.mode==='manager'&&!rosterOK())break;
+   if(G.mode==='player'&&G.car.pending)break;if(G.mode==='manager'&&(!rosterOK()||(G.tl&&G.tl.pending)))break;
    const m=userMatch(d);
    if(m&&!G.results[m.id]){const r=runUserMatch(),won=(r.sa>r.sb)===(r.a===G.me),opp=r.a===G.me?r.b:r.a;lines.push({l:d.label,opp,sc:`${r.sa}–${r.sb}`,won,mid:m.id})}
    finishDay(true)}
@@ -2624,7 +2744,7 @@ function dfShareText(){
 
 /* ---------- écrans du défi ---------- */
 function renderDefi(){
- const app=$('#app');app.className='solo';if(typeof homeStop==='function')homeStop();document.documentElement.style.setProperty('--team','#b8ff2c');if(window.Music)Music.set('game');
+ const app=$('#app');app.className='solo';if(typeof homeStop==='function')homeStop();document.documentElement.style.setProperty('--team','#b8ff2c');if(window.Music){Music.set(DF.step==='match'?'match':'game');Music.level(DF.step==='match'?Math.min(2,DF.r+(DF.cur&&DF.cur.wa===2&&DF.cur.wb===2?1:0)):0)}
  const st=DF.step,steps=['Draft',...DF_ROUNDS.map(x=>x.split(' ')[0]),'Score'],at=st==='draft'?0:st==='done'?4:1+DF.r;
  app.innerHTML=`<div class="dfw"><div class="dftop"><button class="btn sm" onclick="A.home()">← Accueil</button><div class="dft"><b>⚡ ${dfTitle()}</b><span class="mut">${DF.kind==='daily'?dayFr(DF.seed)+' · même défi pour tous':'même draft pour tous ceux qui ont ce code'}</span></div><div class="dfsteps">${steps.map((s,i)=>`<i class="${i<at?'d':i===at?'on':''}">${s}</i>`).join('')}</div><button class="btn sm" onclick="A.dfRules()">? Règles</button></div>
  ${DF.vs&&st!=='done'?`<div class="dfvs">🤝 <b>${esc(DF.vs.n)}</b> te défie : <b class="acc">${nfr(DF.vs.s)} pts</b> à battre.</div>`:''}
@@ -2805,6 +2925,304 @@ function dfFromURL(){try{const q=new URLSearchParams(location.search),d=(q.get('
   const s=parseInt(q.get('s')||'',10),n=(q.get('n')||'').replace(/[<>&"]/g,'').slice(0,16);
   if(s>0&&s<=6000&&!(DS.runs[code]&&DS.runs[code].done))DF_VS={seed:code,s,n:n||'Un ami'};
   clean();A.defiSeed(code);return true}catch(e){return false}}
+
+/* =========================================================
+   v7 — CARTES & VETO, MATCH EN DIRECT INTERACTIF, VIE D'ÉQUIPE
+   ========================================================= */
+const MAPS={hp:['Villa Solano','Nova Station','Stade Rojo','Auto Mile'],snd:['Aurora Rooftops','Bunker 47','Villa Solano','Port Cendre'],ovl:['Nova Station','Auto Mile','Canal 9']};
+const gSalt=()=>G.salt||(G.salt=1+Math.floor(Math.random()*1e9));
+const mapKey=(mode,map)=>mode+'|'+map;
+function mapAff(tid,mode,map){const t=T(tid),b=((h32([gSalt(),G.season,tid,mode,map].join('|'))%1000)/1000-.5)*4.4;return clamp(b+((t.mapx&&t.mapx[mapKey(mode,map)])||0),-3,3.5)}
+const affTxt=v=>v>=1.2?'Très forte':v>=.4?'Forte':v>-.4?'Neutre':v>-1.2?'Faible':'Très faible';
+const affCls=v=>v>=.4?'good':v<=-.4?'bad':'';
+const sgn=v=>(v>=0?'+':'')+v.toFixed(1);
+const myAffHTML=(mode,map)=>{const v=mapAff(G.me,mode,map);return`<b class="${affCls(v)}">${affTxt(v)} (${sgn(v)})</b>`};
+function oppAffHTML(tid,mode,map){const v=mapAff(tid,mode,map),k=G.mode==='manager'?me().staff.analyst:3;return k>=4?`<b class="${affCls(v)}">${affTxt(v)} (${sgn(v)})</b>`:k>=2?`<b class="${affCls(v)}">${affTxt(v)}</b>`:'<b class="mut">inconnue</b>'}
+function mapLearn(tid,mode,map,won){const t=T(tid);t.mapx=t.mapx||{};const k=mapKey(mode,map);t.mapx[k]=clamp((t.mapx[k]||0)+(won?.22:.1),-1,1.6)}
+/* ---------- veto ---------- */
+function vetoSteps(bo){const seq=MODE_SEQ[bo]||MODE_SEQ[5],need={},st=[],fp={hp:'a',snd:'b',ovl:'a'},o=x=>x==='a'?'b':'a';seq.forEach(m=>need[m]=(need[m]||0)+1);
+ for(const mode of['hp','snd','ovl']){if(!need[mode])continue;let w=o(fp[mode]);for(let i=MAPS[mode].length-need[mode];i>0;i--){st.push({t:'ban',mode,who:w});w=o(w)}
+  w=fp[mode];for(let i=need[mode];i>1;i--){st.push({t:'pick',mode,who:w});w=o(w)}st.push({t:'last',mode})}
+ return st}
+function vetoNew(m,bo){return{m,bo,steps:vetoSteps(bo),i:0,left:{hp:MAPS.hp.slice(),snd:MAPS.snd.slice(),ovl:MAPS.ovl.slice()},got:{hp:[],snd:[],ovl:[]},log:[]}}
+function vetoAI(V){const s=V.steps[V.i],a=s.who==='a'?V.m.a:V.m.b,b=s.who==='a'?V.m.b:V.m.a,d=x=>mapAff(a,s.mode,x)-mapAff(b,s.mode,x),L=V.left[s.mode].slice().sort((x,y)=>d(x)-d(y));return s.t==='ban'?L[0]:L[L.length-1]}
+function vetoDo(V,map){const s=V.steps[V.i];if(!s)return false;if(s.t==='last')map=V.left[s.mode][0];const k=V.left[s.mode].indexOf(map);if(k<0)return false;V.left[s.mode].splice(k,1);
+ if(s.t!=='ban')V.got[s.mode].push({map,by:s.t==='pick'?s.who:null});V.log.push({t:s.t,mode:s.mode,who:s.who||null,map});V.i++;
+ while(V.i<V.steps.length&&V.steps[V.i].t==='last'){const x=V.steps[V.i],mp=V.left[x.mode].shift();V.got[x.mode].push({map:mp,by:null});V.log.push({t:'last',mode:x.mode,who:null,map:mp});V.i++}
+ return true}
+const vetoDone=V=>V.i>=V.steps.length;
+function vetoMaps(V){const k={hp:0,snd:0,ovl:0};return(MODE_SEQ[V.bo]||MODE_SEQ[5]).map(mode=>{const g=V.got[mode][k[mode]++];return{mode,map:g.map,by:g.by}})}
+function vetoAuto(m,bo){const V=vetoNew(m,bo);let g=0;while(!vetoDone(V)&&g++<40)vetoDo(V,vetoAI(V));return vetoMaps(V)}
+/* ---------- personnalités & dynamique d'équipe ---------- */
+const TPERS={leader:{n:'Leader',ic:'🧭',d:'Tire le groupe vers le haut. Sa présence parmi les titulaires stabilise l\'équipe.'},ego:{n:'Star',ic:'👑',d:'Veut être au centre du jeu. Deux stars titulaires sans leader, et c\'est la guerre d\'ego.'},pro:{n:'Pro',ic:'🎯',d:'Sérieux et sans histoire.'},joker:{n:'Ambianceur',ic:'🎉',d:'Met de la vie dans le vestiaire.'},calm:{n:'Sang-froid',ic:'🧊',d:'Ne tremble pas : bonus sur la carte décisive.'},hot:{n:'Sanguin',ic:'🌋',d:'Explosif, dans les deux sens.'},shy:{n:'Discret',ic:'🤫',d:'Parle peu et encaisse en silence.'},grind:{n:'Bosseur',ic:'🏋️',d:'Premier arrivé, dernier parti.'}};
+const TPERS_K=['leader','ego','pro','pro','joker','calm','hot','shy','grind','pro','calm','hot'];
+const persOf=p=>p.per||(p.per=TPERS_K[h32(p.id+'|'+p.tag+'|'+p.nat)%TPERS_K.length]);
+const persIc=p=>`<span class="pers" title="${TPERS[persOf(p)].n} — ${esc(TPERS[persOf(p)].d)}">${TPERS[persOf(p)].ic}</span>`;
+function teamDyn(tid,ps){
+ const c={};ps.forEach(p=>{const k=persOf(p);c[k]=(c[k]||0)+1});const it=[];
+ if(c.leader)it.push({t:'Un leader guide les titulaires',v:.6});
+ if((c.ego||0)>=2)it.push({t:c.leader?'Deux stars, tenues par le leader':'Guerre d\'ego entre stars',v:c.leader?-.3:-.7});
+ if(c.joker)it.push({t:'Bonne ambiance (ambianceur)',v:.25});
+ if(tid===G.me&&G.mode==='manager'&&G.tl){const ids=new Set(ps.map(p=>p.id));
+  G.tl.feuds.forEach(f=>{if(ids.has(f.a)&&ids.has(f.b))it.push({t:`Tension ${P(f.a).tag} / ${P(f.b).tag}`,v:-.8})});
+  G.tl.duos.forEach(f=>{if(ids.has(f.a)&&ids.has(f.b))it.push({t:`Duo ${P(f.a).tag} + ${P(f.b).tag}`,v:.5})})}
+ return{v:it.reduce((s,x)=>s+x.v,0),it}}
+const calmAdj=tid=>.35*lineupPlayers(tid).filter(p=>persOf(p)==='calm').length;
+function matchMvp(maps,win){const agg={};maps.forEach(mp=>{for(const id in mp.stats)(agg[id]=agg[id]||[]).push(mp.stats[id].r)});let mvp=null,best=-1;for(const id in agg){const p=P(id),sc=avg(agg[id])+(p&&p.team===win?.08:0);if(sc>best){best=sc;mvp=id}}return mvp}
+
+/* ---------- match en direct interactif ---------- */
+let LM=null;
+const TO_MAX={3:1,5:2,7:3};
+const TO_TYPES={calm:{ic:'🧊',n:'Calmer le jeu',d:'+1,5 de force et un résultat plus prévisible. Idéal quand tu es favori.'},hype:{ic:'🔥',n:'Motiver',d:'Jusqu\'à +3,5 si le moral de tes titulaires est haut, presque rien s\'il est bas.'},strat:{ic:'🎯',n:'Contre-stratégie',d:'Bonus selon le niveau de ton analyste.'}};
+function toBonus(k){const lu=lineupPlayers(G.me),mo=avg(lu.map(p=>p.morale));return k==='calm'?1.5:k==='hype'?(mo>=65?3.5:mo>=50?2:.5):1+me().staff.analyst*.6}
+function lmStart(){
+ const day=G.cal[G.day],m=userMatch(day);if(!m||G.results[m.id])return;
+ if(G.mode==='manager'&&roster(G.me).length<4)return toast('Effectif incomplet.',1);
+ const bo=m.bo||5,mineA=m.a===G.me,opp=mineA?m.b:m.a,c=G.car;
+ LM={day,m,bo,need:(bo+1)>>1,mineA,opp,plan:null,maps:[],sa:0,sb:0,phase:'veto',tac:G.mode==='manager'?{...me().tactics}:aiTac(G.me,opp),oppT:aiTac(opp,G.me),
+  to:TO_MAX[bo]||2,oppTo:1,call:null,talk:false,talked:false,side:{},tags:{},roles:{},spd:2,k:0,subbed:false,V:null,
+  dec:G.mode==='player'?(()=>{const p=P(G.pid),k=c.decider||'calm';return k==='calm'?.02:k==='allin'?(rnd()<.5?1:-1)*.1:(p.attrs.team>=60?.05:-.03)})():0};
+ clearInterval(ui.timer);A.locked=true;ui.fn=null;if(window.Music){Music.set('match');Music.level(day.k==='league'?0:1)}
+ if(G.mode==='manager'){LM.V=vetoNew(m,bo);lmRender();lmVetoAI()}else{LM.plan=vetoAuto(m,bo);LM.phase='pre';lmRender()}}
+const lmMine=w=>(w==='a')===LM.mineA;
+function lmVetoAI(){const V=LM&&LM.V;if(!V||LM.phase!=='veto')return;if(vetoDone(V)){LM.plan=vetoMaps(V);return lmRender()}
+ const s=V.steps[V.i];if(lmMine(s.who))return;
+ setTimeout(()=>{if(!LM||LM.V!==V||LM.phase!=='veto'||vetoDone(V))return;const x=V.steps[V.i];if(lmMine(x.who))return;vetoDo(V,vetoAI(V));if(window.SFX)(x.t==='ban'?SFX.ban:SFX.pick)();if(vetoDone(V))LM.plan=vetoMaps(V);lmRender();lmVetoAI()},620)}
+function lmStrength(i,tacOverride){
+ const L=LM,{mode,map}=L.plan[i],A_=teamStrength(G.me,mode,tacOverride||L.tac[mode]),B_=teamStrength(L.opp,mode,L.oppT[mode]);
+ A_.S+=mapAff(G.me,mode,map);B_.S+=mapAff(L.opp,mode,map);
+ if(i===L.bo-1){A_.S+=calmAdj(G.me);B_.S+=calmAdj(L.opp)}
+ return{A_,B_}}
+function lmLevel(i){const L=LM,dec=L.sa===L.need-1&&L.sb===L.need-1;return dec||L.day.last?2:(L.day.k!=='league'||i>=2)?1:0}
+function lmPlay(){
+ const L=LM;if(!L||L.phase!=='pre')return;const i=L.maps.length,{mode,map}=L.plan[i],notes=[];
+ const{A_,B_}=lmStrength(i);
+ if(G.mode==='manager'&&L.call&&L.to>0){const b=toBonus(L.call);A_.S+=b;if(L.call==='calm'){A_.v*=.8}if(L.call==='hype')lineupPlayers(G.me).forEach(p=>p.morale=clamp(p.morale+2,0,100));L.to--;notes.push(`⏱ Temps mort — ${TO_TYPES[L.call].n} : +${b.toFixed(1)} de force.`)}
+ if(G.mode==='player'&&L.talk&&!L.talked){const p=P(G.pid),c=G.car,pr=clamp(.35+(p.attrs.team-50)/80+(c.trust-50)/150,.15,.9);L.talked=true;
+  if(rnd()<pr){A_.S+=2.5;c.trust=clamp(c.trust+2,0,100);notes.push('📣 Tu prends la parole : l\'équipe te suit (+2,5 de force, confiance du coach ↑).')}else{A_.S-=1;c.trust=clamp(c.trust-2,0,100);notes.push('📣 Tu prends la parole… et ça tombe à plat (−1 de force, confiance du coach ↓).')}}
+ const mineBehind=(L.mineA?L.sa:L.sb)<(L.mineA?L.sb:L.sa),oppBehind=(L.mineA?L.sb:L.sa)<(L.mineA?L.sa:L.sb);
+ if(L.oppTo>0&&oppBehind&&((L.mineA?L.sa:L.sb)===L.need-1||rnd()<.3)){B_.S+=2.2;L.oppTo--;notes.push(`⏱ ${T(L.opp).short} prend un temps mort (+2,2 de force pour eux).`)}
+ let pMine=mapProb(A_,B_);if(i===L.bo-1&&L.dec){pMine=clamp(pMine+L.dec,.04,.96)}
+ [L.m.a,L.m.b].forEach(t=>lineupPlayers(t).forEach(p=>{L.side[p.id]=t;L.tags[p.id]=p.tag;L.roles[p.id]=p.role}));
+ const mp=simMap(mode,L.m.a,L.m.b,L.mineA?pMine:1-pMine,map);mp.by=L.plan[i].by;mp.notes=notes;mp.SA=A_.S;mp.SB=B_.S;mp.lu=[L.m.a,L.m.b].map(t=>T(t).lineup.slice());
+ L.maps.push(mp);L.call=null;L.talk=false;L.subbed=false;L.phase='play';L.k=0;L.paused=false;
+ if(L.quiet)return;
+ if(window.Music)Music.level(lmLevel(i));if(window.SFX)SFX.mapStart();
+ lmRender();lmTimer()}
+function lmTimer(){clearInterval(ui.timer);ui.timer=setInterval(lmTick,{1:520,2:260,4:110}[LM.spd])}
+function lmTick(){const L=LM;if(!L||L.phase!=='play'){clearInterval(ui.timer);return}if(L.paused)return;
+ const mp=L.maps[L.maps.length-1],lg=$('#lmlog');if(!lg){clearInterval(ui.timer);return}
+ if(L.k>=mp.log.length){clearInterval(ui.timer);return lmMapEnd()}
+ const l=mp.log[L.k++];$('#lmsa').textContent=l.sa;$('#lmsb').textContent=l.sb;lg.insertAdjacentHTML('beforeend',`<div>${l.text} <span class="mut">[${l.sa}–${l.sb}]</span></div>`);lg.scrollTop=lg.scrollHeight;if(window.SFX)SFX.tick()}
+function lmMapEnd(){
+ const L=LM,mp=L.maps[L.maps.length-1],aw=mp.sa>mp.sb;aw?L.sa++:L.sb++;const won=aw===L.mineA;
+ [[L.m.a,aw],[L.m.b,!aw]].forEach(([t,w])=>lineupPlayers(t).forEach(p=>{const hot=persOf(p)==='hot'?1.5:1;p.fatigue=clamp(p.fatigue+(mp.mode==='hp'?2.5:1.5),0,100);p.morale=clamp(p.morale+(w?1.5:-1)*hot,0,100)}));
+ mapLearn(G.me,mp.mode,mp.map,won);if(window.SFX&&!L.quiet)(won?SFX.good:SFX.bad)();
+ if(L.sa===L.need||L.sb===L.need)return lmFinish();
+ L.phase='pre';if(L.quiet)return;if(window.Music)Music.level(lmLevel(L.maps.length));lmRender()}
+function lmFinish(){
+ const L=LM,win=L.sa>L.sb?L.m.a:L.m.b;
+ const res={id:L.m.id,a:L.m.a,b:L.m.b,sa:L.sa,sb:L.sb,maps:L.maps,mvp:matchMvp(L.maps,win),bo:L.bo,side:L.side,tags:L.tags,roles:L.roles,live:1};
+ commit(L.day,L.m,res,true);L.res=res;L.phase='end';
+ const won=(res.sa>res.sb)===L.mineA;if(window.SFX)won?SFX.win():SFX.lose();if(window.Music){Music.level(0);Music.set('game')}
+ lmRender()}
+function lmSimRest(){const L=LM;if(!L||L.phase==='end')return;clearInterval(ui.timer);L.quiet=true;
+ if(L.phase==='veto'){while(!vetoDone(L.V))vetoDo(L.V,vetoAI(L.V));L.plan=vetoMaps(L.V);L.phase='pre'}
+ let g=0;while(L.phase!=='end'&&g++<12){if(L.phase==='play'){L.k=1e9;lmMapEnd()}else{L.call=null;L.talk=false;lmPlay()}}
+ L.quiet=false;lmRender()}
+function lmRender(){
+ const L=LM;if(!L)return;const el=$('#modal'),m=L.m,cur=L.phase==='play'?L.maps[L.maps.length-1]:null,nMaps=L.maps.length;
+ const track=L.plan?L.plan.map((x,i)=>{const mp=L.maps[i],done=mp&&!(cur&&i===nMaps-1),w=done&&((mp.sa>mp.sb)===L.mineA);return`<span class="pill lmt ${done?(w?'good':'bad'):''} ${(cur&&i===nMaps-1)||(L.phase==='pre'&&i===nMaps)?'on':''}">${i+1} · ${MODE_S[x.mode]} <small>${x.map}</small>${done?` <b>${mp.sa}–${mp.sb}</b>`:''}</span>`}).join(''):'';
+ let body='';
+ if(L.phase==='veto')body=lmVetoHTML();else if(L.phase==='pre')body=lmPreHTML();else if(L.phase==='play')body=`<div class="lmplay"><div class="mut c" style="letter-spacing:.16em;text-transform:uppercase;font-size:12px">Carte ${nMaps} · ${MODE[cur.mode]} · ${cur.map}</div><div class="dfsc"><b id="lmsa">0</b><span>–</span><b id="lmsb">0</b></div>
+  ${cur.notes.length?`<div class="lmnotes">${cur.notes.map(n=>`<div>${n}</div>`).join('')}</div>`:''}
+  <div class="row" style="margin:8px 0;justify-content:center"><button class="btn sm" onclick="A.lmPause()">${L.paused?'▶ Reprendre':'⏸ Pause'}</button>${[1,2,4].map(s=>`<button class="btn sm ${L.spd===s?'pri':''}" onclick="A.lmSpeed(${s})">×${s}</button>`).join('')}<button class="btn sm warn" onclick="A.lmSkip()">⏭ Fin de la carte</button></div>
+  <div class="log" id="lmlog" style="height:240px"></div></div>`;
+ else body=`<div class="dfend ${(L.res.sa>L.res.sb)===L.mineA?'w':'l'}" style="margin-bottom:12px"><b>${(L.res.sa>L.res.sb)===L.mineA?'✅ Victoire':'❌ Défaite'} ${L.res.sa}–${L.res.sb}</b></div>${reportHTML(L.res,1)}${perfCard(L.res)}<div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn pri" onclick="A.afterMatch()">Continuer ▶</button></div>`;
+ el.className='mb on';
+ el.innerHTML=`<div class="md lm"><div class="mh"><h2>Match en direct</h2><span class="mut">${L.day.label} · Best-of-${L.bo}</span>${L.phase!=='end'?`<button class="btn sm" style="margin-left:auto" onclick="A.lmSimRest()" title="Termine le match sans intervention">⏩ Simuler la fin du match</button>`:''}</div>
+ <div class="scoreb"><div>${bdg(m.a,1)}<div class="n">${tname(m.a)}</div></div><div><div class="s">${L.sa} – ${L.sb}</div><div class="mut">${L.phase==='veto'?'Veto des cartes':L.phase==='end'?'Terminé':`Carte ${Math.min(L.bo,nMaps+(L.phase==='pre'?1:0))}`}</div></div><div>${bdg(m.b,1)}<div class="n">${tname(m.b)}</div></div></div>
+ ${track?`<div class="lmtrack">${track}</div>`:''}${body}</div>`;
+ if(cur){const lg=$('#lmlog');cur.log.slice(0,L.k).forEach(l=>lg.insertAdjacentHTML('beforeend',`<div>${l.text} <span class="mut">[${l.sa}–${l.sb}]</span></div>`));lg.scrollTop=lg.scrollHeight;const l=cur.log[Math.max(0,L.k-1)];if(L.k>0){$('#lmsa').textContent=l.sa;$('#lmsb').textContent=l.sb}}}
+function lmVetoHTML(){
+ const V=LM.V,s=V.steps[V.i],mine=s&&lmMine(s.who),st={};V.log.forEach(l=>st[mapKey(l.mode,l.map)]=l);
+ const need={};(MODE_SEQ[V.bo]||MODE_SEQ[5]).forEach(x=>need[x]=(need[x]||0)+1);
+ const row=mode=>`<div class="vrow"><div class="vmode"><b>${MODE[mode]}</b><small>${need[mode]} carte${need[mode]>1?'s':''} jouée${need[mode]>1?'s':''}</small></div><div class="vmaps">${MAPS[mode].map(mp=>{const l=st[mapKey(mode,mp)],can=mine&&s.mode===mode&&!l;
+   return`<button class="vmap ${l?(l.t==='ban'?'ban':'pk'):''} ${can?'can':''}" ${can?`onclick="A.lmVeto(${MAPS[mode].indexOf(mp)})"`:'disabled'}><b>${mp}</b><span>Toi : ${myAffHTML(mode,mp)}</span><span>Eux : ${oppAffHTML(LM.opp,mode,mp)}</span>${l?`<i>${l.t==='ban'?`🚫 Bannie par ${l.who&&lmMine(l.who)?'toi':T(LM.opp).short}`:l.t==='pick'?`✅ Choisie par ${lmMine(l.who)?'toi':T(LM.opp).short}`:'✅ Carte restante'}</i>`:''}</button>`}).join('')}</div></div>`;
+ return`<div class="lmprompt ${mine?'me':''}">${vetoDone(V)?'Veto terminé.':mine?`À toi : <b>${s.t==='ban'?'bannis':'choisis'}</b> une carte <b>${MODE[s.mode]}</b>.`:`${T(LM.opp).short} réfléchit…`}</div>
+ ${['hp','snd','ovl'].filter(x=>need[x]).map(row).join('')}
+ <p class="mut" style="font-size:13px;margin:10px 0 0">Chaque équipe a ses cartes fortes et faibles (jusqu'à ±3 de force). Bannis les meilleures cartes adverses, garde les tiennes.${me().staff.analyst<4?' Un analyste de niveau 4 révèle les valeurs exactes de l\'adversaire.':''}</p>
+ <div class="row" style="margin-top:12px;justify-content:flex-end">${vetoDone(V)?`<button class="btn pri" onclick="A.lmVetoOk()">Commencer le match ▶</button>`:`<button class="btn" onclick="A.lmVetoAuto()">Laisser le staff décider</button>`}</div>`}
+function lmPreHTML(){
+ const L=LM,i=L.maps.length,{mode,map,by}=L.plan[i],mgr=G.mode==='manager',last=L.maps[i-1],t=me(),lu=lineupPlayers(G.me),bench=roster(G.me).filter(p=>!t.lineup.includes(p.id));
+ const{A_,B_}=lmStrength(i),bon=mgr&&L.call?toBonus(L.call):0,sMe=A_.S+bon,d=sMe-B_.S,dyn=teamDyn(G.me,lu);
+ const tacs=mgr?`<div class="dftacs">${['agr','bal','cau'].map(x=>{const s=lmStrength(i,x).A_.S+bon;return`<button class="dftac ${L.tac[mode]===x?'on':''}" onclick="A.lmTac('${x}')"><b>${TACT[x]}</b><span>force ${s.toFixed(1)}</span><small>${x==='agr'?'Plus aléatoire : pour un outsider.':x==='cau'?'Plus prévisible : pour un favori.':'Sans risque particulier.'}</small></button>`}).join('')}</div>
+  <h4 class="lmh">⏱ Temps mort <span class="mut">(${L.to} restant${L.to>1?'s':''})</span></h4><div class="dftacs">${Object.keys(TO_TYPES).map(k=>`<button class="dftac ${L.call===k?'on':''}" ${L.to<=0?'disabled':''} onclick="A.lmCall('${k}')"><b>${TO_TYPES[k].ic} ${TO_TYPES[k].n}</b><span class="good">+${toBonus(k).toFixed(1)}</span><small>${TO_TYPES[k].d}</small></button>`).join('')}</div>`
+  :`<h4 class="lmh">Ta mentalité sur cette carte</h4><div class="dftacs">${Object.keys(MIND).map(k=>`<button class="dftac ${G.car.mind===k?'on':''}" onclick="A.lmMind('${k}')"><b>${MIND[k].ic} ${MIND[k].n}</b><small>${MIND[k].d}</small></button>`).join('')}</div>
+  <label class="dftm ${L.talked?'off':''}"><input type="checkbox" ${L.talk?'checked':''} ${L.talked?'disabled':''} onchange="A.lmTalk(this.checked)"><span><b>📣 Prendre la parole</b> avant cette carte (une fois par match) : +2,5 de force si l'équipe te suit, −1 sinon. <span class="mut">Chances selon ton Teamplay et la confiance du coach.</span></span></label>`;
+ const sub=mgr&&bench.length?`<h4 class="lmh">🔁 Remplacement <span class="mut">(un par carte)</span></h4><div class="row"><select id="lmout" class="sel" ${L.subbed?'disabled':''}>${lu.map(p=>`<option value="${p.id}">${p.tag} · fatigue ${Math.round(p.fatigue)}</option>`).join('')}</select><span>→</span><select id="lmin" class="sel" ${L.subbed?'disabled':''}>${bench.map(p=>`<option value="${p.id}">${p.tag} · ${p.role} ${ovr(p)} · fatigue ${Math.round(p.fatigue)}</option>`).join('')}</select><button class="btn sm" ${L.subbed?'disabled':''} onclick="A.lmSub()">Remplacer</button></div>`:'';
+ const recap=last?`<div class="card ${((last.sa>last.sb)===L.mineA)?'lmw':'lml'}"><h3>Carte ${i} · ${MODE[last.mode]} · ${last.map}</h3><div class="row" style="justify-content:space-between"><b style="font-size:22px">${last.sa} – ${last.sb}</b><b class="${((last.sa>last.sb)===L.mineA)?'good':'bad'}">${((last.sa>last.sb)===L.mineA)?'Carte gagnée':'Carte perdue'}</b></div>${last.notes.map(n=>`<div class="mut" style="font-size:13px">${n}</div>`).join('')}</div>`:'';
+ return`<div class="lmgrid"><div><div class="card"><h3>Carte ${i+1} · ${MODE[mode]} · ${map}</h3>
+   <div class="mut" style="margin-bottom:8px">${by?`Choisie par ${lmMine(by)?'toi':T(L.opp).short}`:'Carte restante du veto'} · Toi : ${myAffHTML(mode,map)} · Eux : ${oppAffHTML(L.opp,mode,map)}${i===L.bo-1?' · <b class="warn">carte décisive</b>':''}</div>
+   <div class="dfcmp"><div><small>Toi</small><b class="${d>=0?'good':''}">${sMe.toFixed(1)}</b></div><span class="pill ${d>1.5?'good':d<-1.5?'bad':'warn'}">${d>1.5?'Tu es favori':d<-1.5?'Tu es outsider':'Match serré'}</span><div><small>${T(L.opp).short}</small><b class="${d<0?'bad':''}">${B_.S.toFixed(1)}</b></div></div>
+   ${tacs}${sub}
+   <button class="btn pri" style="width:100%;margin-top:14px;font-size:17px" onclick="A.lmPlay()">▶ Jouer la carte ${i+1}</button></div></div>
+  <div>${recap}<div class="card"><h3>Tes titulaires</h3>${lu.map(p=>`<div class="dfr"><span class="chip r-${p.role}">${p.role}</span><b>${G.mode==='player'&&p.id===G.pid?'★ ':''}${esc(p.tag)} ${persIc(p)}</b><span></span><b>${Math.round(effMode(p,mode))}</b><div class="dfr2"><span title="Fatigue">😴 ${bar(p.fatigue,bcol(p.fatigue,1))}</span><span title="Moral">🙂 ${bar(p.morale,bcol(p.morale))}</span></div></div>`).join('')}
+   ${dyn.it.length?`<div class="mut" style="font-size:13px;margin-top:8px">Dynamique : ${dyn.it.map(x=>`${x.t} <b class="${x.v>0?'good':'bad'}">${sgn(x.v)}</b>`).join(' · ')}</div>`:''}</div></div></div>`}
+Object.assign(A,{
+ startMatch(){lmStart()},
+ lmVeto(ix){const L=LM;if(!L||L.phase!=='veto')return;const V=L.V,s=V.steps[V.i];if(!s||!lmMine(s.who))return;if(!vetoDo(V,MAPS[s.mode][ix]))return;if(window.SFX)(s.t==='ban'?SFX.ban:SFX.pick)();if(vetoDone(V))L.plan=vetoMaps(V);lmRender();lmVetoAI()},
+ lmVetoAuto(){const L=LM;if(!L||L.phase!=='veto')return;while(!vetoDone(L.V))vetoDo(L.V,vetoAI(L.V));L.plan=vetoMaps(L.V);lmRender()},
+ lmVetoOk(){if(!LM||!LM.plan)return;LM.phase='pre';lmRender()},
+ lmTac(x){const L=LM;if(!L||L.phase!=='pre')return;L.tac[L.plan[L.maps.length].mode]=x;lmRender()},
+ lmCall(k){const L=LM;if(!L||L.to<=0)return;L.call=L.call===k?null:k;if(L.call&&window.SFX)SFX.timeout();lmRender()},
+ lmMind(k){G.car.mind=k;lmRender()},
+ lmTalk(v){LM.talk=!!v&&!LM.talked;lmRender()},
+ lmSub(){const L=LM;if(!L||L.subbed||L.phase!=='pre')return;const o=$('#lmout').value,n=$('#lmin').value,t=me(),k=t.lineup.indexOf(o);if(k<0||t.lineup.includes(n))return;t.lineup[k]=n;t.chem=Math.max(25,t.chem-1.5);L.subbed=true;toast(`${P(n).tag} entre à la place de ${P(o).tag}.`);lmRender()},
+ lmPlay(){lmPlay()},
+ lmPause(){if(LM){LM.paused=!LM.paused;lmRender()}},
+ lmSpeed(s){if(LM){LM.spd=s;lmRender();if(LM.phase==='play')lmTimer()}},
+ lmSkip(){const L=LM;if(!L||L.phase!=='play')return;clearInterval(ui.timer);L.k=1e9;lmMapEnd()},
+ lmSimRest(){lmSimRest()},
+ afterMatch(){LM=null;A.close();finishDay()}
+});
+
+/* ---------- vie d'équipe (mode Manager) ---------- */
+const tlNow=()=>G.season*1000+G.day;
+function tl(){if(!G.tl)G.tl={next:tlNow()+ri(3,5),feuds:[],duos:[],promises:[],log:[],cd:{},pending:null,last:[]};return G.tl}
+const tlLog=(ic,t)=>{const L=tl().log;L.unshift({ic,t,d:G.phase==='season'&&G.cal[G.day]?G.cal[G.day].label:'Intersaison',s:G.season});if(L.length>30)L.pop()};
+const TLF={mor:(p,v)=>{if(p)p.morale=clamp(p.morale+v,0,100)},all:v=>roster(G.me).forEach(p=>TLF.mor(p,v)),others:(ids,v)=>roster(G.me).forEach(p=>{if(!ids.includes(p.id))TLF.mor(p,v)}),
+ chem:v=>{const t=me();t.chem=clamp(t.chem+v,20,95)},form:(p,v)=>{if(p)p.form=clamp(p.form+v,5,95)},fat:(p,v)=>{if(p)p.fatigue=clamp(p.fatigue+v,0,100)},luFat:v=>lineupPlayers(G.me).forEach(p=>TLF.fat(p,v)),
+ cash:(v,l)=>{me().balance+=v;ledger(l||'Vie d\'équipe',v)},board:v=>{G.board.conf=clamp(G.board.conf+v,0,100)},
+ feud:(a,b,d)=>{const T_=tl();if(!T_.feuds.some(f=>(f.a===a.id&&f.b===b.id)||(f.a===b.id&&f.b===a.id)))T_.feuds.push({a:a.id,b:b.id,d});T_.duos=T_.duos.filter(f=>!((f.a===a.id&&f.b===b.id)||(f.a===b.id&&f.b===a.id)))},
+ duo:(a,b)=>{const T_=tl();if(T_.duos.length<3&&!T_.duos.some(f=>(f.a===a.id&&f.b===b.id)||(f.a===b.id&&f.b===a.id)))T_.duos.push({a:a.id,b:b.id})},
+ peace:(a,b)=>{const T_=tl();T_.feuds=T_.feuds.filter(f=>!((f.a===a&&f.b===b)||(f.a===b&&f.b===a)))},
+ promise:(p,days)=>{tl().promises.push({pid:p.id,by:tlNow()+days})}};
+const pPsy=()=>clamp(.3+me().staff.psy*.11,.3,.9),pct=x=>Math.round(x*100)+' %';
+const tlCtx=()=>{const t=me(),r=roster(G.me),lu=lineupPlayers(G.me),ids=new Set(t.lineup);return{t,r,lu,bench:r.filter(p=>!ids.has(p.id)),f:t.form.slice(-3).join('')}};
+const TL_EVENTS=[
+ {id:'clash',ic:'💥',t:'Le ton monte',w:2,pick(c){if(c.t.form[c.t.form.length-1]!=='L')return null;const a=c.lu.find(p=>['ego','hot'].includes(persOf(p)));if(!a)return null;const b=c.lu.filter(p=>p!==a).sort((x,y)=>(['ego','hot','leader'].includes(persOf(y))?1:0)-(['ego','hot','leader'].includes(persOf(x))?1:0))[0];return b?{a:a.id,b:b.id}:null},
+  x:d=>`Après la défaite, le ton monte entre <b>${P(d.a).tag}</b> ${persIc(P(d.a))} et <b>${P(d.b).tag}</b> ${persIc(P(d.b))} : chacun rejette la faute sur l'autre devant tout le groupe.`,
+  ch:d=>[{l:'Organiser une médiation avec le psychologue',s:`Réussite : ${pct(pPsy())} (niveau du psychologue)`,run(){const a=P(d.a),b=P(d.b);if(rnd()<pPsy()){TLF.mor(a,4);TLF.mor(b,4);TLF.chem(2);return'La discussion est franche mais constructive. Ils se serrent la main. Moral et chimie en hausse.'}TLF.feud(a,b,12);TLF.chem(-2);return'La médiation tourne court. Ils ne se parlent plus : tension durable tant qu\'ils jouent ensemble (−0,8 de force).'}},
+   {l:'Sanctionner les deux d\'une amende',s:'Discipline : moral des deux ↓, respect du groupe ↑',run(){TLF.mor(P(d.a),-5);TLF.mor(P(d.b),-5);TLF.others([d.a,d.b],1);TLF.cash(10,'Amendes');TLF.board(1);return'Tu frappes au portefeuille. Le message passe : personne n\'est au-dessus du groupe.'}},
+   {l:'Laisser couler',s:'Une chance sur deux que ça dégénère',run(){if(rnd()<.5)return'L\'orage passe tout seul. Le lendemain, ils en rigolent.';TLF.feud(P(d.a),P(d.b),10);return'Faute de cadre, la dispute s\'envenime : tension durable entre les deux joueurs.'}}]},
+ {id:'bench',ic:'🪑',t:'Un remplaçant frustré',w:2,pick(c){const w=c.lu.slice().sort((x,y)=>ovr(x)-ovr(y))[0],p=c.bench.filter(x=>persOf(x)==='ego'||ovr(x)>=ovr(w)-3).sort((x,y)=>ovr(y)-ovr(x))[0];return p&&!tl().promises.some(q=>q.pid===p.id)?{p:p.id}:null},
+  x:d=>`<b>${P(d.p).tag}</b> ${persIc(P(d.p))} (${ovr(P(d.p))}) frappe à ta porte : il ne comprend pas pourquoi il reste sur le banc.`,
+  ch:d=>[{l:'Lui promettre une titularisation rapide',s:'Promesse à tenir sous 6 jours, sinon gros coup au moral',run(){TLF.mor(P(d.p),7);TLF.promise(P(d.p),6);return`${P(d.p).tag} repart rassuré. Tu dois l'aligner dans un match officiel d'ici 6 jours.`}},
+   {l:'Lui dire la vérité : il doit gagner sa place',s:'Bien reçu par un pro ou un bosseur, mal par une star',run(){const p=P(d.p),k=persOf(p);if(['pro','grind','calm','leader'].includes(k)){TLF.mor(p,2);TLF.form(p,5);return'Il encaisse et répond à l\'entraînement : sa forme grimpe.'}TLF.mor(p,-9);TLF.others([d.p],-1);return'Il prend très mal la remarque et boude dans son coin.'}},
+   {l:'Le placer sur la liste des transferts',s:'Clair, mais brutal',run(){const p=P(d.p);p.listed=true;TLF.mor(p,-10);return`${p.tag} est placé sur la liste des transferts. Des offres pourraient arriver.`}}]},
+ {id:'raise',ic:'💰',t:'Demande d\'augmentation',w:1,pick(c){const p=c.lu.slice().sort((x,y)=>ovr(y)-ovr(x))[0];return p&&p.wage<askWage(p,c.t)*.92&&p.raiseAsked!==G.season?{p:p.id}:null},
+  x:d=>{const p=P(d.p);return`<b>${p.tag}</b> ${persIc(p)} estime mériter mieux que ${fmtK(p.wage)} par saison et demande une revalorisation immédiate de ${fmtK(Math.round(p.wage*.15))}.`},
+  ch:d=>{const p=P(d.p),inc=Math.round(p.wage*.15),ok=payroll(G.me)+inc<=CAP;return[{l:`Accepter (+${fmtK(inc)} par saison)`,s:ok?'Moral ↑↑':'Impossible : plafond salarial dépassé',dis:!ok,run(){p.wage+=inc;p.raiseAsked=G.season;TLF.mor(p,10);return`${p.tag} signe son avenant avec le sourire.`}},
+   {l:'Promettre d\'en reparler à l\'intersaison',s:'Gagne du temps',run(){p.raiseAsked=G.season;TLF.mor(p,persOf(p)==='ego'?-3:2);return persOf(p)==='ego'?'Il attendait mieux et te le fait sentir.':'Il accepte d\'attendre la fin de saison.'}},
+   {l:'Refuser net',s:'Moral ↓, surtout pour une star',run(){p.raiseAsked=G.season;TLF.mor(p,persOf(p)==='ego'?-14:-7);return'Il quitte ton bureau en claquant la porte.'}}]}},
+ {id:'party',ic:'🎉',t:'Soirée d\'équipe',w:1,pick(c){const p=c.r.find(x=>persOf(x)==='joker');return p?{p:p.id}:null},
+  x:d=>`<b>${P(d.p).tag}</b> ${persIc(P(d.p))} veut organiser une soirée pour souder le groupe… à la veille d'une journée de compétition.`,
+  ch:d=>[{l:'Autoriser',s:'Moral et chimie ↑, fatigue ↑',run(){TLF.all(5);TLF.chem(2);TLF.luFat(6);return'Soirée mémorable. Le groupe est soudé, mais les yeux sont petits ce matin.'}},
+   {l:'Autoriser avec couvre-feu à minuit',s:'60 % : le meilleur des deux mondes',run(){if(rnd()<.6){TLF.all(3);TLF.chem(1);TLF.luFat(2);return'Tout le monde rentre à l\'heure. Bonne ambiance, peu de fatigue.'}TLF.all(4);TLF.luFat(7);return'Le couvre-feu n\'a pas été respecté… Fatigue générale.'}},
+   {l:'Interdire',s:'Sérieux, mais ça grince',run(){TLF.mor(P(d.p),-5);TLF.others([d.p],-1);return'Pas de soirée. Le groupe comprend, sans enthousiasme.'}}]},
+ {id:'bootcamp',ic:'⛺',t:'Proposition de stage',w:1,pick:c=>c.t.balance>=60&&c.t.chem<80?{}:null,
+  x:()=>`Ton coach propose un stage de cohésion de trois jours : exercices de communication, scrims intensifs, sans téléphone.`,
+  ch:()=>[{l:'Stage complet (40k$)',s:'Chimie ↑↑, forme ↑, fatigue ↑',run(){TLF.cash(-40,'Stage de cohésion');TLF.chem(6);roster(G.me).forEach(p=>{TLF.fat(p,9);TLF.form(p,4)});return'Trois jours intenses. L\'équipe se trouve les yeux fermés.'}},
+   {l:'Version allégée (20k$)',s:'Chimie ↑, peu de fatigue',run(){TLF.cash(-20,'Stage de cohésion');TLF.chem(3);roster(G.me).forEach(p=>TLF.fat(p,4));return'Une journée et demie bien remplie, sans casser les organismes.'}},
+   {l:'Refuser',s:'On garde le rythme habituel',run(){return'Tu préfères ne pas bousculer la routine.'}}]},
+ {id:'sponsor',ic:'📸',t:'Journée sponsor',w:1,pick:()=>({}),
+  x:()=>`Un sponsor veut l'équipe au complet pour une journée de tournage. Le chèque est intéressant, la fatigue aussi.`,
+  ch:()=>{const s=lineupPlayers(G.me).slice().sort((a,b)=>ovr(b)-ovr(a))[0];return[{l:'Envoyer toute l\'équipe (+35k$)',s:'Fatigue ↑ pour les titulaires',run(){TLF.cash(35,'Opération sponsor');TLF.luFat(6);TLF.all(-1);return'Le tournage s\'éternise, mais le sponsor est ravi.'}},
+   {l:`Envoyer seulement ${s.tag} (+18k$)`,s:'Un seul joueur fatigué',run(){TLF.cash(18,'Opération sponsor');TLF.fat(s,8);if(persOf(s)==='ego')TLF.mor(s,4);return`${s.tag} assure le spectacle devant les caméras.`}},
+   {l:'Refuser',s:'Le board n\'aime pas',run(){TLF.board(-2);return'Tu protèges ton groupe. La direction grince des dents.'}}]}},
+ {id:'doubt',ic:'🌧️',t:'Un joueur doute',w:2,pick(c){const p=c.lu.filter(x=>x.form<38).sort((x,y)=>x.form-y.form)[0];return p?{p:p.id}:null},
+  x:d=>`<b>${P(d.p).tag}</b> ${persIc(P(d.p))} enchaîne les mauvais matchs. À l'entraînement, il ne dit plus un mot.`,
+  ch:d=>{const p=P(d.p),b=roster(G.me).filter(x=>!me().lineup.includes(x.id)).sort((x,y)=>effOvr(y)-effOvr(x))[0];return[{l:'Un entretien avec le psychologue',s:`Réussite : ${pct(pPsy())}`,run(){if(rnd()<pPsy()){TLF.form(p,12);TLF.mor(p,6);return'Il vide son sac. Le lendemain, il retrouve ses sensations.'}TLF.mor(p,-3);return'Il n\'est pas prêt à en parler. Rien ne change.'}},
+   {l:b?`Le mettre au repos (${b.tag} titulaire)`:'Le mettre au repos',s:b?'Il souffle, mais l\'équipe change':'Aucun remplaçant disponible',dis:!b,run(){const t=me(),k=t.lineup.indexOf(p.id);if(k>=0)t.lineup[k]=b.id;TLF.chem(-2);TLF.fat(p,-15);TLF.form(p,6);if(!['pro','calm','shy'].includes(persOf(p)))TLF.mor(p,-3);return`${p.tag} souffle quelques jours. ${b.tag} prend sa place.`}},
+   {l:'Le pousser à l\'entraînement',s:'Marche avec un bosseur, risqué sinon',run(){if(persOf(p)==='grind'||rnd()<.5){TLF.form(p,8);TLF.fat(p,5);return'Il répond présent et retrouve de la confiance par le travail.'}TLF.fat(p,8);TLF.mor(p,-4);return'Tu en demandes trop : il s\'épuise et se braque.'}}]}},
+ {id:'rumor',ic:'📰',t:'Rumeur de transfert',w:1,pick(c){const p=c.lu.filter(x=>ovr(x)>=72&&!x.listed).sort((x,y)=>ovr(y)-ovr(x))[0];return p?{p:p.id}:null},
+  x:d=>`La presse annonce <b>${P(d.p).tag}</b> ${persIc(P(d.p))} en discussion avec un concurrent. Le vestiaire s'interroge.`,
+  ch:d=>{const p=P(d.p);return[{l:'Démentir publiquement',s:'Rassure le joueur et le board',run(){TLF.mor(p,3);TLF.board(1);return'Ton démenti est ferme. Le sujet retombe.'}},
+   {l:'Ne rien dire',s:'Une chance sur deux que le doute s\'installe',run(){if(rnd()<.5)return'La rumeur s\'éteint d\'elle-même.';TLF.mor(p,-5);TLF.chem(-1);return'Ton silence est interprété comme un aveu. Le joueur se pose des questions.'}},
+   {l:'Ouvrir la porte à un départ',s:'Il est mis sur la liste des transferts',run(){p.listed=true;TLF.mor(p,-6);TLF.others([p.id],-2);return`${p.tag} est officiellement transférable.`}}]}},
+ {id:'style',ic:'🧭',t:'Le leader veut changer de style',w:1,pick(c){const p=c.lu.find(x=>persOf(x)==='leader');if(!p)return null;const st=styleScore(c.lu),want=st>1?'agr':st<-1?'cau':null;return want&&['hp','snd','ovl'].some(m=>c.t.tactics[m]!==want)?{p:p.id,w:want}:null},
+  x:d=>`<b>${P(d.p).tag}</b> ${persIc(P(d.p))} pense que l'équipe devrait jouer plus <b>${d.w==='agr'?'agressif':'posé'}</b> : « C'est notre identité. »`,
+  ch:d=>{const p=P(d.p);return[{l:`Adopter le style ${TACT[d.w].toLowerCase()} sur tous les modes`,s:'Chimie ↑, le leader est écouté',run(){['hp','snd','ovl'].forEach(m=>me().tactics[m]=d.w);TLF.chem(3);TLF.mor(p,5);return'Le groupe adhère. Tes tactiques ont été modifiées.'}},
+   {l:`Tester d'abord en ${MODE.hp}`,s:'Compromis',run(){me().tactics.hp=d.w;TLF.mor(p,2);return`Essai sur le mode ${MODE.hp} : on jugera sur pièces.`}},
+   {l:'Refuser : c\'est toi le manager',s:'Le leader le vit mal',run(){TLF.mor(p,-5);return'Il s\'incline, mais n\'en pense pas moins.'}}]}},
+ {id:'prospect',ic:'🌱',t:'Une pépite se révèle',w:1,pick(c){const p=c.bench.filter(x=>x.age<=21&&x.pot>=ovr(x)+5).sort((x,y)=>y.pot-x.pot)[0];return p&&!tl().promises.some(q=>q.pid===p.id)?{p:p.id}:null},
+  x:d=>`À l'entraînement, le jeune <b>${P(d.p).tag}</b> ${persIc(P(d.p))} (${P(d.p).age} ans) éclabousse les scrims de son talent.`,
+  ch:d=>{const p=P(d.p);return[{l:'Lui promettre sa chance en match officiel',s:'Promesse à tenir sous 6 jours',run(){TLF.mor(p,8);TLF.promise(p,6);return`${p.tag} est aux anges. Tu dois l'aligner d'ici 6 jours.`}},
+   {l:'Séances particulières avec le coach (10k$)',s:'Progression immédiate',run(){TLF.cash(-10,'Séances particulières');const ks=shuffle(ATTRS.slice()).slice(0,2);ks.forEach(k=>p.attrs[k]=clamp(p.attrs[k]+.9,25,97));TLF.mor(p,3);return`${p.tag} progresse en ${ks.map(k=>ATTR_L[k]).join(' et ')}.`}},
+   {l:'Lui demander de la patience',s:'Un bosseur comprend, les autres moins',run(){if(persOf(p)!=='grind')TLF.mor(p,-3);return'Il hoche la tête et retourne travailler.'}}]}},
+ {id:'late',ic:'⏰',t:'Retard à l\'entraînement',w:1,pick(c){const p=c.r.find(x=>['hot','joker','ego'].includes(persOf(x)));return p?{p:p.id}:null},
+  x:d=>`<b>${P(d.p).tag}</b> ${persIc(P(d.p))} arrive avec une heure de retard à la séance vidéo. Tout le monde te regarde.`,
+  ch:d=>{const p=P(d.p);return[{l:'Amende et excuses devant le groupe',s:'Ferme : le groupe apprécie',run(){TLF.mor(p,-5);TLF.others([p.id],2);TLF.cash(5,'Amendes');return'La règle est la même pour tous. Le groupe apprécie.'}},
+   {l:'Simple avertissement',s:'30 % de récidive',run(){if(rnd()<.3){TLF.chem(-2);return'Deux jours plus tard, rebelote. Ton autorité en prend un coup.'}return'Il s\'excuse et promet que ça ne se reproduira pas.'}},
+   {l:'Fermer les yeux',s:'Les autres voient tout',run(){TLF.others([p.id],-3);TLF.chem(-2);return'Les autres joueurs notent que les règles ne s\'appliquent pas à tous.'}}]}},
+ {id:'crisis',ic:'🚨',t:'Réunion de crise',w:4,pick:c=>c.f==='LLL'?{}:null,
+  x:()=>`Trois défaites de suite. Le vestiaire est silencieux et tous les regards se tournent vers toi.`,
+  ch:()=>{const ld=lineupPlayers(G.me).some(p=>persOf(p)==='leader'),pr=ld?.65:.4;return[{l:'Un discours musclé',s:`Réussite : ${pct(pr)}${ld?' (ton leader te relaie)':' (pas de leader pour relayer)'}`,run(){if(rnd()<pr){TLF.all(8);TLF.chem(2);return'Tes mots font mouche. Le groupe relève la tête.'}TLF.all(-5);return'Le discours sonne creux. Certains lèvent les yeux au ciel.'}},
+   {l:'Une journée complète de repos',s:'Moral ↑, fatigue ↓, un peu de rythme en moins',run(){roster(G.me).forEach(p=>{TLF.mor(p,4);TLF.fat(p,-10);TLF.form(p,-2)});return'Tout le monde coupe. Les têtes se vident.'}},
+   {l:'Double séance d\'entraînement',s:'Forme ↑, fatigue ↑, moral ↓',run(){roster(G.me).forEach(p=>{TLF.form(p,5);TLF.fat(p,10);TLF.mor(p,-3)});return'On repart des bases, dans la douleur.'}}]}},
+ {id:'streak',ic:'🔥',t:'Série de victoires',w:3,pick:c=>c.f==='WWW'?{}:null,
+  x:()=>`Trois victoires de suite : la presse vous encense et les réseaux s'enflamment.`,
+  ch:()=>[{l:'Garder les pieds sur terre',s:'Forme ↑, les stars râlent un peu',run(){roster(G.me).forEach(p=>{TLF.form(p,3);if(persOf(p)==='ego')TLF.mor(p,-3)});return'On range les compliments et on retourne travailler.'}},
+   {l:'Laisser le groupe en profiter',s:'Moral ↑, 35 % de relâchement',run(){TLF.all(5);if(rnd()<.35){roster(G.me).forEach(p=>TLF.form(p,-5));return'Le groupe savoure… un peu trop. La concentration baisse.'}return'Le groupe savoure et garde le cap.'}},
+   {l:'Fixer un objectif plus ambitieux',s:'Board ↑, moral ↑',run(){TLF.board(2);TLF.all(2);return'Tu annonces viser plus haut. La direction adore.'}}]},
+ {id:'duo',ic:'🤝',t:'Une complicité naît',w:1,pick(c){const T_=tl();if(T_.duos.length>=2||c.lu.length<2)return null;const l=shuffle(c.lu.slice()),a=l[0],b=l[1];return T_.feuds.some(f=>[f.a,f.b].includes(a.id)&&[f.a,f.b].includes(b.id))||T_.duos.some(f=>[f.a,f.b].includes(a.id)&&[f.a,f.b].includes(b.id))?null:{a:a.id,b:b.id}},
+  x:d=>`<b>${P(d.a).tag}</b> et <b>${P(d.b).tag}</b> passent leurs soirées à revoir leurs matchs ensemble. Leur entente saute aux yeux.`,
+  ch:d=>[{l:'Les encourager',s:'Duo : +0,5 de force quand ils jouent ensemble',run(){TLF.duo(P(d.a),P(d.b));return'Un vrai duo est né. Il apporte un bonus tant que les deux sont titulaires.'}},
+   {l:'Construire des stratégies autour d\'eux',s:'Duo + chimie ↑, fatigue ↑',run(){TLF.duo(P(d.a),P(d.b));TLF.chem(2);TLF.fat(P(d.a),4);TLF.fat(P(d.b),4);return'Tu bâtis des automatismes autour du duo.'}},
+   {l:'Ne rien changer',s:'',run(){return'Tu laisses les choses se faire naturellement.'}}]},
+ {id:'peace',ic:'🕊️',t:'Occasion de réconciliation',w:3,pick(){const f=tl().feuds[0];return f&&P(f.a)&&P(f.b)&&P(f.a).team===G.me&&P(f.b).team===G.me?{a:f.a,b:f.b}:null},
+  x:d=>`La tension entre <b>${P(d.a).tag}</b> et <b>${P(d.b).tag}</b> pèse sur tout le groupe. Une occasion se présente d'y mettre fin.`,
+  ch:d=>[{l:'Les inviter à dîner (5k$)',s:'Réussite : 60 %',run(){TLF.cash(-5,'Vie d\'équipe');if(rnd()<.6){TLF.peace(d.a,d.b);TLF.chem(3);return'Autour d\'un bon repas, ils enterrent la hache de guerre.'}return'Le dîner est poli, sans plus. Rien n\'est réglé.'}},
+   {l:'Les forcer à s\'expliquer',s:`Réussite : ${pct(pPsy())}, sinon ça empire`,run(){if(rnd()<pPsy()){TLF.peace(d.a,d.b);TLF.chem(2);return'Tout est mis sur la table. Ils repartent sur de bonnes bases.'}const f=tl().feuds.find(x=>x.a===d.a&&x.b===d.b);if(f)f.d+=6;TLF.mor(P(d.a),-3);TLF.mor(P(d.b),-3);return'L\'explication tourne au règlement de comptes.'}},
+   {l:'Attendre que ça passe',s:'',run(){return'Tu laisses le temps faire son œuvre.'}}]}
+];
+const tlDef=id=>TL_EVENTS.find(e=>e.id===id);
+function tlTick(day){
+ const T_=tl(),now=tlNow(),um=userMatch(day),res=um&&G.results[um.id];
+ // promesses
+ T_.promises=T_.promises.filter(q=>{const p=P(q.pid);if(!p||p.team!==G.me)return false;
+  if(res&&res.side&&res.side[q.pid]){TLF.mor(p,6);tlLog('✅',`Promesse tenue : ${p.tag} a été aligné.`);return false}
+  if(now>q.by){TLF.mor(p,-15);TLF.chem(-3);tlLog('💔',`Promesse non tenue envers ${p.tag} : son moral s'effondre.`);msg('Promesse non tenue',`Tu avais promis du temps de jeu à <b>${p.tag}</b>. Il se sent trahi : moral et chimie en baisse.`);return false}return true});
+ // tensions qui s'apaisent, duos rompus par un départ
+ T_.feuds=T_.feuds.filter(f=>{const a=P(f.a),b=P(f.b);if(!a||!b||a.team!==G.me||b.team!==G.me)return false;if(--f.d<=0){tlLog('🕊️',`${a.tag} et ${b.tag} ont fini par s'expliquer.`);return false}return true});
+ T_.duos=T_.duos.filter(f=>{const a=P(f.a),b=P(f.b);return a&&b&&a.team===G.me&&b.team===G.me});
+ if(T_.pending||now<T_.next)return;
+ const c=tlCtx(),el=[];TL_EVENTS.forEach(e=>{if(T_.last.includes(e.id))return;let d=null;try{d=e.pick(c)}catch(x){d=null}if(d)for(let i=0;i<e.w;i++)el.push({id:e.id,d})});
+ if(!el.length){T_.next=now+2;return}
+ const ch=pick(el);T_.pending={id:ch.id,d:ch.d};T_.last.unshift(ch.id);T_.last=T_.last.slice(0,5);T_.next=now+ri(5,8)}
+function openTeamEvent(){
+ if(!G||G.mode!=='manager'||!G.tl||!G.tl.pending||$('#modal').classList.contains('on'))return;
+ const pe=G.tl.pending,E=tlDef(pe.id);let ok=!!E;if(ok)try{E.x(pe.d);E.ch(pe.d)}catch(e){ok=false}
+ if(!ok){G.tl.pending=null;return}
+ ui.tlRes=null;A.locked=true;if(window.SFX)SFX.evt();
+ openModal(()=>{const ch=E.ch(pe.d);return ui.tlRes?`<div class="mh"><div class="evic">${E.ic}</div><h2>${E.t}</h2></div><div class="card" style="border-left:3px solid var(--team)">${ui.tlRes}</div><div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn pri" onclick="A.tlDone()">Continuer ▶</button></div>`
+  :`<div class="mh"><div class="evic">${E.ic}</div><h2>${E.t}</h2><span class="pill">Vie d'équipe</span></div><p style="font-size:17px;line-height:1.55">${E.x(pe.d)}</p><div class="evch">${ch.map((x,i)=>`<button class="btn evb" ${x.dis?'disabled':''} onclick="A.tlChoose(${i})"><b>${x.l}</b>${x.s?`<span>${x.s}</span>`:''}</button>`).join('')}</div>`},'sm')}
+const tlCd=k=>Math.max(0,((tl().cd[k])||0)-tlNow());
+VIEWS.locker=()=>{
+ const T_=tl(),t=me(),r=roster(G.me).sort((a,b)=>ovr(b)-ovr(a)),lu=lineupPlayers(G.me),ids=new Set(t.lineup),dyn=teamDyn(G.me,lu);
+ const rel=p=>[...T_.feuds.filter(f=>f.a===p.id||f.b===p.id).map(f=>`<span class="pill bad">💢 ${P(f.a===p.id?f.b:f.a).tag}</span>`),...T_.duos.filter(f=>f.a===p.id||f.b===p.id).map(f=>`<span class="pill good">🤝 ${P(f.a===p.id?f.b:f.a).tag}</span>`),...T_.promises.filter(q=>q.pid===p.id).map(q=>`<span class="pill warn">⏳ promesse : ${Math.max(0,q.by-tlNow())} j</span>`)].join(' ');
+ const cd=(k,l)=>tlCd(k)?`<span class="mut">disponible dans ${tlCd(k)} j</span>`:l;
+ return`<div class="h1">Vestiaire <small>personnalités, ambiance et décisions</small></div>
+ ${T_.pending?`<div class="card" style="border-left:4px solid var(--acc2);margin-bottom:14px"><div class="row" style="justify-content:space-between"><b>⚠ Une décision t'attend dans le vestiaire.</b><button class="btn pri" onclick="openTeamEvent()">Voir</button></div></div>`:''}
+ <div class="grid g32"><div class="card"><h3>Le groupe</h3><div class="tw"><table><tr><th>Joueur</th><th>Personnalité</th><th>Moral</th><th>Statut</th><th>Relations</th></tr>${r.map(p=>`<tr class="clk" onclick="A.player('${p.id}')"><td><b>${p.tag}</b> <span class="mut">${p.role} ${ovr(p)}</span></td><td style="white-space:normal;min-width:190px">${TPERS[persOf(p)].ic} <b>${TPERS[persOf(p)].n}</b><div class="mut" style="font-size:12.5px;line-height:1.3">${TPERS[persOf(p)].d}</div></td><td>${bar(p.morale,bcol(p.morale))}</td><td>${ids.has(p.id)?'<span class="pill good">Titulaire</span>':'<span class="pill">Remplaçant</span>'}</td><td style="white-space:normal">${rel(p)||'<span class="mut">—</span>'}</td></tr>`).join('')}</table></div></div>
+ <div><div class="card"><h3>Ambiance <span class="r mut">chimie ${Math.round(t.chem)} %</span></h3>${bar(t.chem,bcol(t.chem))}
+   <div style="margin-top:10px">${dyn.it.length?dyn.it.map(x=>`<div class="row" style="justify-content:space-between"><span>${x.t}</span><b class="${x.v>0?'good':'bad'}">${sgn(x.v)}</b></div>`).join(''):'<span class="mut">Aucun effet particulier parmi tes titulaires.</span>'}</div>
+   <div class="row" style="justify-content:space-between;margin-top:8px;border-top:1px solid var(--line);padding-top:8px"><b>Effet sur la force de l'équipe</b><b class="${dyn.v>0?'good':dyn.v<0?'bad':''}">${sgn(dyn.v)}</b></div></div>
+  <div class="card" style="margin-top:14px"><h3>Tes leviers</h3>
+   <div class="lev"><div><b>🗣 Réunion d'équipe</b><div class="mut">Après des défaites, peut relancer le moral. Plus efficace avec un leader titulaire.</div></div>${cd('meet',`<button class="btn sm" onclick="A.tlMeet()">Réunir</button>`)}</div>
+   <div class="lev"><div><b>🍕 Sortie d'équipe (15k$)</b><div class="mut">Moral +4, chimie +3, un peu de fatigue. Peut apaiser une tension.</div></div>${cd('out',`<button class="btn sm" onclick="A.tlOut()">Organiser</button>`)}</div>
+   <div class="lev"><div><b>🤝 Entretien individuel</b><div class="mut">Remonte le moral d'un joueur. <select id="tlwho" class="sel" style="margin-top:4px">${r.map(p=>`<option value="${p.id}">${p.tag} (moral ${Math.round(p.morale)})</option>`).join('')}</select></div></div>${cd('talk',`<button class="btn sm" onclick="A.tlTalk()">Parler</button>`)}</div></div></div></div>
+ <div class="card" style="margin-top:14px"><h3>Journal du vestiaire</h3><ul class="ledger">${T_.log.slice(0,12).map(l=>`<li class="row"><span>${l.ic}</span><span style="flex:1;min-width:0">${l.t}</span><span class="mut" style="font-size:12px">S${l.s} · ${l.d}</span></li>`).join('')||'<li class="mut">Rien à signaler pour l\'instant. Des situations apparaîtront au fil de la saison.</li>'}</ul></div>`};
+Object.assign(A,{
+ tlChoose(i){const pe=G.tl.pending,E=tlDef(pe.id),ch=E.ch(pe.d)[i];if(!ch||ch.dis||ui.tlRes)return;const txt=ch.run();ui.tlRes=`<b>${ch.l}</b><div style="margin-top:6px">${txt}</div>`;tlLog(E.ic,`${E.t} — ${ch.l}. ${txt}`);G.tl.pending=null;save();ui.fn&&refreshUI()},
+ tlDone(){ui.tlRes=null;A.locked=false;A.close();save();refreshUI()},
+ tlMeet(){if(tlCd('meet'))return;const t=me(),bad=t.form.slice(-3).filter(x=>x==='L').length,ld=lineupPlayers(G.me).some(p=>persOf(p)==='leader'),pr=clamp(.35+(ld?.25:0)+bad*.08,.2,.9);tl().cd.meet=tlNow()+6;
+  if(rnd()<pr){TLF.all(5);TLF.chem(2);tlLog('🗣',`Réunion d'équipe réussie : le groupe repart soudé.`);toast('La réunion fait du bien : moral et chimie en hausse.')}else{TLF.all(-2);tlLog('🗣',`Réunion d'équipe ratée : le groupe n'était pas réceptif.`);toast('La réunion tombe à plat : moral en légère baisse.',1)}save();render()},
+ tlOut(){if(tlCd('out'))return;if(me().balance<15)return toast('Budget insuffisant.',1);tl().cd.out=tlNow()+10;TLF.cash(-15,'Sortie d\'équipe');TLF.all(4);TLF.chem(3);roster(G.me).forEach(p=>TLF.fat(p,3));
+  const f=tl().feuds[0];if(f&&rnd()<.4){tlLog('🍕',`Sortie d'équipe : ${P(f.a).tag} et ${P(f.b).tag} se réconcilient.`);TLF.peace(f.a,f.b)}else tlLog('🍕','Sortie d\'équipe : une bonne soirée pour tout le monde.');toast('Sortie réussie : moral et chimie en hausse.');save();render()},
+ tlTalk(){if(tlCd('talk'))return;const p=P($('#tlwho').value);if(!p)return;tl().cd.talk=tlNow()+3;const k=persOf(p),v=k==='shy'?10:k==='ego'?4:7;TLF.mor(p,v);tlLog('🤝',`Entretien avec ${p.tag} : moral +${v}.`);toast(`${p.tag} apprécie l'échange (moral +${v}).`);save();render()}
+});
 
 /* ---------- init ---------- */
 genLeague();
